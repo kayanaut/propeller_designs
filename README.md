@@ -3,6 +3,11 @@
 - [aerial_designs.md](aerial_designs.md) 
 - [underwater_designs.md](underwater_designs.md)
 
+## CAD prompts
+
+- [cad/aerial_cad.md](cad/aerial_cad.md) — build briefs for the aerial designs
+- [cad/underwater_cad.md](cad/underwater_cad.md) — build briefs for the underwater designs
+
 ## Geometry creation
 
 - [Parametric Propeller CAD Generator](https://github.com/Andre-AH/Parametric-Propeller-CAD-Generator) — FreeCAD, blade count, diameter and angles driven from a spreadsheet
