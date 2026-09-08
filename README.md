@@ -1,6 +1,7 @@
 # Propeller Designs
 
 - [aerial_designs.md](aerial_designs.md) 
+- [underwater_designs.md](underwater_designs.md)
 
 ## Geometry creation
 
