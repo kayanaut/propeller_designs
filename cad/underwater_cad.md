@@ -44,8 +44,8 @@ pipeline — its parameter list (chord, thickness, skew, rake, section offsets) 
 **Model** — one-piece cast-style propeller on standard series geometry; the baseline the other
 underwater designs are judged against.
 
-**Parameters** — `D = 250`, `Z = 4`, `P/D = 1.0`, blade area ratio 0.55, hub ratio `d/D = 0.167`,
-rake 15°, Wageningen B section offsets.
+**Parameters** — `D = 250`, `Z = 4`, `P/D = 1.0`, expanded area ratio (`Ae/Ao`) 0.55, hub ratio
+`d/D = 0.167`, rake 15°, Wageningen B section offsets.
 
 **Build** — the loft recipe unchanged, with `c(r)`, `t(r)` and the section offsets taken from the
 B-series tables rather than invented.
@@ -71,6 +71,23 @@ crosshead whose sliding blocks turn each crank pin. Pitch angle is the driven pa
 not thrust, is what caps blade area on a CPP), and the palm bolt circle repeats identically on every
 blade.
 
+## Tip-loaded (Kappel / CLT)
+
+**Model** — the FPP blade with its tip turned into an end plate, in both variants from one script.
+
+**Parameters** — base FPP, plus a variant flag: **Kappel** rakes the tip smoothly toward the suction
+side, **CLT** turns it into a discrete end plate on the pressure side. Transition starts at
+`r/R = 0.85`; tip rake height and end-plate height as fractions of `R`.
+
+**Build** — for Kappel, drive the existing rake term with a nonlinear tip curve so the blade sweeps
+into the rake with continuous curvature — it is a bent blade, not a blade with a plate on it. For
+CLT, build an actual end plate standing off the pressure side with a defined root fillet.
+
+**Done when** — both variants come out of the same script by flag, the Kappel tip is curvature-
+continuous with no crease at the transition, the CLT plate stands on the pressure side (getting the
+side backwards silently turns one design into the other), and tip rake height is reported as a
+fraction of `R`.
+
 ## Ducted propeller / Kort nozzle
 
 **Model** — propeller inside a fixed accelerating nozzle, as a two-part assembly.
@@ -91,16 +108,40 @@ cylindrical over the blade sweep, and the blade tip is square rather than faired
 **Model** — rotor and stator fully enclosed in a long shroud, with a faired hub — the quiet
 submarine/torpedo variant of the ducted propeller.
 
-**Parameters** — shroud length `1.0 D`, rotor `Z = 7`, stator `V = 9` (no common factor with `Z`,
-which is what keeps the blade-passing tones from reinforcing), stator downstream of the rotor
-(post-swirl), tip gap 0.5 (~0.2% of Ø), hub an ogive nose and a tapered tail cone.
+**Parameters** — shroud length `1.0 D`, rotor `Z = 7`, stator `V = 15`, tip gap 0.5 (~0.2% of Ø), hub
+an ogive nose and a tapered tail cone.
+
+Two choices decide this design, and the application sets both. **Stator side:** a submarine puts the
+stator *upstream* (pre-swirl), where it straightens the hull and appendage wake before the rotor
+meets it — that is the quiet arrangement, and it is the point of the whole propulsor. A torpedo puts
+it *downstream* (post-swirl), where it recovers rotor swirl and contributes on the order of a quarter
+of total thrust. State which vehicle the model is for and place the stator accordingly.
+**Vane count:** not "coprime" — Tyler–Sofrin again, `V ≥ 2Z` to cut off the fundamental, hence 15
+against a 7-blade rotor.
 
 **Build** — shroud as a revolved annular section with a thick inner wall (decelerating flow, which
 is the point: it suppresses cavitation). Rotor by the loft recipe with high skew and high solidity.
 Stator vanes are constant-section struts, joined shroud to hub, and they carry the hub.
 
-**Done when** — rotor and stator counts share no common factor, the flow path is continuous with no
-step at the rotor plane, and the hub is supported only by the stator vanes.
+**Done when** — `V ≥ 2Z` holds, the stator is on the side the stated application calls for, the flow
+path is continuous with no step at the rotor plane, and the hub is supported only by the stator vanes.
+
+## Rim-driven (hubless)
+
+**Model** — blades carried on a motor-rotor ring inside a duct, with no hub and no shaft anywhere in
+the model.
+
+**Parameters** — duct inner Ø 250, `Z = 5`, ring axial length, magnetic gap between ring OD and duct
+stator ID 1.5, open centre (true hubless) or a small nose fairing as a flag.
+
+**Build** — the structure is inverted relative to every other propeller here: each blade is
+cantilevered *inward* from the ring, so its structural root is at the tip radius and its free end is
+at the smallest radius. Loft the blade the usual way, then fix the outer end into the ring and leave
+the inner end free. The ring is a plain annulus with a magnet-pocket band.
+
+**Done when** — there is no shaft, no hub bore and no centre boss; blades meet the ring with a fillet
+and are unsupported at the inner radius; and the ring-to-stator gap is uniform all round, since that
+gap is both the motor airgap and a viscous drag path.
 
 ## Contra-rotating (CRP)
 
@@ -135,6 +176,23 @@ edge over the outer third of the blade.
 trailing edge, not mid-chord), TE thickness meets the parameter at all stations, and the tip is
 square.
 
+## Supercavitating
+
+**Model** — fully submerged propeller whose blades are shaped to run inside their own vapour cavity.
+
+**Parameters** — `D = 250`, `Z = 3`, `P/D = 1.6`, expanded area ratio 0.55, sharp leading edge with a
+stated included angle, trailing-edge thickness 4% of chord, design speed recorded in the parameter
+block.
+
+**Build** — wedge sections as in the SPP, but the physics differ and the model should not be a copy:
+here the blade stays submerged and the cavity springs from a sharp leading edge and closes *behind*
+the blade, rather than being fed with atmospheric air through the free surface. Sharp leading edge,
+straight ramp on the suction side, square base at the trailing edge.
+
+**Done when** — maximum thickness sits at the trailing edge, the leading-edge included angle meets
+spec at every station, and the design speed is recorded in the output — the geometry is poor below
+it, so a model without that number is not usable.
+
 ## Skewed blade
 
 **Model** — the FPP again with skew promoted from a fixed number to the design variable, plus a
@@ -151,6 +209,21 @@ spindle torque stays low. Emit one model per skew value into the same folder.
 **Done when** — the four models differ only in skew, each is watertight, and the report notes for
 each: blade tip circumferential offset, and whether the tip has moved far enough aft that the blade
 would need thickening (the real cost of skew, and why 45° is not free).
+
+## Loop / toroidal (Sharrow)
+
+**Model** — marine closed-loop blade: each blade leaves the hub, loops, and returns, with no free tip.
+
+**Parameters** — `D = 250`, 3 loops, chord scheduled along the loop path, maximum loop width, the two
+root joint positions per loop, and a minimum section thickness that holds all the way round.
+
+**Build** — a sweep along a closed 3D path, as in the aerial toroidal brief, but with marine sections
+throughout: thicker, blunt trailing edge, and a leading-edge radius chosen with cavitation in mind
+rather than a knife edge. Hub is the standard truncated cone with a taper bore.
+
+**Done when** — the loop is tangent-continuous, nothing self-intersects where the return branch
+passes the leading branch, minimum thickness holds around the whole loop including the return, and
+both roots blend into the hub with a fillet.
 
 ## Voith Schneider (cycloidal)
 
@@ -169,3 +242,20 @@ growing with `|e|`. Model the linkage that enforces this, not just the blades.
 **Done when** — `e = 0` gives zero net thrust with every blade tangent to its orbit, sweeping the
 direction of `e` rotates the thrust vector a matching amount, and the pitch-versus-azimuth table
 exports for one full revolution.
+
+## Podded azimuth thruster
+
+**Model** — steerable pod assembly: strut, pod housing sized around a motor, propeller, and the slew
+interface it turns on.
+
+**Parameters** — propeller `D = 250` (the FPP brief, unchanged), pod body Ø `0.5 D`, pod length
+`2.5 D`, strut chord and thickness, slew ring Ø, and a flag for tractor (propeller forward) or pusher.
+
+**Build** — pod is a body of revolution with a faired nose and tail cone; the strut is a symmetric
+section joining pod to hull plate; the propeller mounts on the pod nose for a tractor unit and the
+tail for a pusher. Model the slew ring as a real annular joint with a declared rotation axis, so
+steering is a driven parameter and not a fixed pose.
+
+**Done when** — the assembly sweeps a full 360° about the slew axis with no clash against the hull
+plate at any angle, the propeller clears the strut leading edge by the stated margin, and
+tractor/pusher is a flag rather than a second script.

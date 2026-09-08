@@ -57,10 +57,10 @@ cylindrical root shank for clamping.
 Ø 8 and shank length 15. Sections thinner than moulded plastic: `t/c` 12% root to 7% tip, sharp
 trailing edge.
 
-**Build** — solve the design point in [JavaProp](https://www.mh-aerotools.de/airfoils/javaprop.htm)
-or [OpenProp](https://www.epps.com/openprop) for `c(r)` and `β(r)`, write that to CSV, and have the
-script loft from the CSV. The CSV is the interface: a new design point is a new table, not a new
-script.
+**Build** — solve the design point in [JavaProp](https://www.mh-aerotools.de/airfoils/javaprop.htm),
+QPROP, XROTOR or JBLADE for `c(r)` and `β(r)`, write that to CSV, and have the script loft from the
+CSV. The CSV is the interface: a new design point is a new table, not a new script. Do not reach for
+OpenProp here — it is a marine lifting-line code, and it belongs in the underwater briefs.
 
 **Done when** — the script regenerates the blade from any well-formed chord/twist CSV without edits,
 and the shank is a true cylinder over its clamped length.
@@ -79,6 +79,24 @@ pitch range ±25° about the `r/R = 0.75` setting.
 **Done when** — sweeping `collar_z` covers the full pitch range with no link-to-hub interference at
 either stop, and blades stay clear of one another at maximum pitch.
 
+## eVTOL proprotor
+
+**Model** — a rigid blade with no cyclic that has to work as a rotor in hover and as a propeller in
+wing-borne cruise, tilting between the two.
+
+**Parameters** — `D = 1500`, `Z = 5`, two design points rather than one (hover: high thrust, advance
+ratio ≈ 0; cruise: high advance ratio at reduced rpm), tip Mach capped around 0.55 because tip speed
+sets the noise, and a blend weight that says which point the twist favours.
+
+**Build** — solve both design points, then reconcile them: the script ingests two chord/twist tables
+and blends to one geometry at the blend weight. That compromise is the entire design problem here —
+a blade optimal in hover is badly pitched in cruise and the other way round, so the blend weight must
+stay a live input, not a number baked into the loft.
+
+**Done when** — the one geometry is evaluated at both design points and the run reports thrust and
+efficiency at each, tip Mach stays under the cap at hover rpm, and changing the blend weight visibly
+moves the twist distribution.
+
 ## Folding blade
 
 **Model** — two blades on clevis hinges in the hub, trailing back when unpowered.
@@ -89,23 +107,29 @@ range 0–175°, deployed stop face on the hub.
 **Build** — blade as fixed-pitch but ending in a tang instead of a root fillet; hub is a clamp with
 two jaws and a pin bore per blade. Emit deployed and folded as two configurations of one script.
 
-**Done when** — folded blades clear each other, the motor bell and the arm; deployed stop faces meet
-flat with their contact area reported; the pin bore is a clearance fit on the pin.
+**Done when** — the blade's centre of mass sits outboard of the hinge pin, so spinning up deploys the
+blade and holds it against the stop (get this wrong and the prop never opens); folded blades clear
+each other, the motor bell and the arm; deployed stop faces meet flat with their contact area
+reported; the pin bore is a clearance fit on the pin.
 
 ## Ducted fan
 
 **Model** — rotor, duct, stator and motor pod as one assembly.
 
-**Parameters** — fan Ø 90, rotor `Z = 5`, stator `V = 7` (coprime with `Z`, which spreads the tonal
-noise), hub ratio 0.45, tip clearance 0.4 (~0.5% of Ø), duct inlet lip radius 6, exit nozzle area
-85% of swept area.
+**Parameters** — fan Ø 90, rotor `Z = 5`, stator `V = 11`, hub ratio 0.45, tip clearance 0.4 (~0.5%
+of Ø), duct inlet lip radius 6, exit nozzle area 85% of swept area.
+
+Vane count is not a matter of picking something coprime. The Tyler–Sofrin rule sets it: `V ≥ 2Z`
+cuts off the fundamental blade-passing tone so it never propagates down the duct, and `V ≥ 4Z` holds
+that through the second harmonic. With `Z = 5` the floor is 10, hence 11 — see
+[NASA's low-noise fan design methods](https://ntrs.nasa.gov/api/citations/20230003262/downloads/20230003262%20REV%20FINAL.pdf).
 
 **Build** — rotor by the loft recipe but high-solidity and thin-sectioned; duct is an annular
 airfoil revolved about +Z, running cylindrical across the rotor plane; stator vanes sit downstream
 and carry the pod; pod holds the motor bore.
 
 **Done when** — tip clearance is uniform to within 0.05 all round, exit area ratio matches the
-parameter, and rotor and stator counts share no common factor.
+parameter, and `V ≥ 2Z` holds.
 
 ## Coaxial contra-rotating
 
@@ -114,11 +138,30 @@ parameter, and rotor and stator counts share no common factor.
 **Parameters** — `D = 254` on both, axial spacing `h = 0.12 D`, upper right-hand and lower
 left-hand, with the lower rotor's pitch exposed separately since it works in the upper rotor's wake.
 
+Size the stack against what a coaxial pair actually delivers, not double a single rotor: the lower
+rotor's inflow is the upper's downwash, induced power climbs steeply as spacing shrinks, and the
+pair lands well short of 2× thrust at equal power.
+
 **Build** — build the upper rotor with the loft recipe; the lower is the same script mirrored about
 the XY plane with its own pitch value. Stack them on a common axis at the spacing parameter.
 
 **Done when** — handedness is a genuine mirror rather than a rotation, spacing stays a live
 parameter, and the two discs never intersect across the spacing range.
+
+## Tip device (Q-tip)
+
+**Model** — a conventional blade with the outer span curled aft into an inverted winglet.
+
+**Parameters** — base blade from Fixed-pitch, bend starting at `r/R = 0.92`, bend angle 75° aft,
+bend radius 8, tip cap.
+
+**Build** — loft the straight blade first, then carry the outer sections around the bend by sweeping
+along a curved spanwise path. Bend the geometry; do not cut a bent tip off and glue it on, or chord
+and thickness will step at the joint.
+
+**Done when** — chord and thickness run continuous through the bend with no kink, and the run reports
+the projected (swept-disc) diameter alongside the developed one — the bent tip shrinks the disc, and
+that reduction is the ground-clearance and tip-noise trade being bought.
 
 ## Toroidal
 
@@ -136,12 +179,31 @@ rather than a blank file.
 **Done when** — the loop is tangent-continuous, nothing self-intersects where the return branch
 passes the leading branch, and both root ends blend into the hub with a fillet.
 
+## Serrated edge
+
+**Model** — a fixed-pitch blade with saw-tooth serrations along the trailing edge, optionally the
+leading edge too.
+
+**Parameters** — base blade from Fixed-pitch, serration amplitude and wavelength as a ratio of local
+chord, applied over `r/R = 0.5` to the tip, saw-tooth or sinusoidal profile, and a flag for
+leading-edge serrations.
+
+**Build** — build the base blade, then apply the serration along the edge curve *in the blade's own
+surface*, following the twist — not as a cut through a flat plane, which would bite deeper at the
+root than at the tip.
+
+**Done when** — serrations appear only in the specified radial band, the solid is still watertight
+after the boolean, amplitude and wavelength are parametric, and the plain unserrated blade is
+exported alongside it so the pair can be compared on a thrust stand.
+
 ## Cyclorotor
 
 **Model** — drum of straight vertical blades with a cyclic pitch linkage.
 
-**Parameters** — orbit radius 75, blade span 150, chord 40, `Z = 4`, symmetric NACA 0015 section,
-pitch axis at 30% chord, pitch amplitude ±35°, eccentricity `e` as the control input.
+**Parameters** — orbit radius 75, blade span 150, chord 26 (`c/R ≈ 0.35`), `Z = 4`, symmetric NACA
+0015 section, pitch axis at 30% chord, pitch amplitude ±35°, eccentricity `e` as the control input.
+Keep `c/R` visible as a derived value: push much past 0.4 and the blade sees enough flow curvature
+across its own chord that its effective camber no longer matches the section you drew.
 
 **Build** — constant-section blades extruded to span, pivoting between two end discs. Each blade arm
 links to a common eccentric point offset `e` from the rotor axis, so pitch cycles once per
