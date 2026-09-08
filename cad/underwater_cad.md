@@ -10,8 +10,10 @@ Nothing here has been built yet — these are the prompts.
   deliverable, not a GUI session.
 - **Parameters** — open every script with a parameter block. Changing a value and re-running must
   give a valid model; nothing dimensional is hard-coded downstream.
-- **Frame** — shaft axis is +Z, thrust toward +Z, hub face on the origin. Right-hand rotation unless
-  a design says otherwise.
+- **Frame** — hub front face at `Z = 0`, thrust toward +Z, angular velocity along +Z by the
+  right-hand rule, so a blade sweeps from +X toward +Y. Rotation sense and pitch sign together decide
+  which way the propeller pushes, so they are not independent settings: with ω along +Z the pressure
+  face has to end up looking toward −Z. Verify that on the built model instead of assuming it.
 - **Units** — millimetres and degrees. Defaults below are ROV/AUV scale so the models stay
   printable; every design is scale-free, so a ship-scale diameter must work by changing one number.
 - **Output** — `cad/underwater/<slug>/` holding `model.step`, `model.stl` and the script.
@@ -20,6 +22,39 @@ Nothing here has been built yet — these are the prompts.
 - **Wet-specific** — no knife-edge trailing edges: hold a minimum TE thickness (1 mm at this scale)
   so the blade is castable and printable. Blade root fillets are large; a cavitation-prone sharp
   corner is a modelling defect, not a detail.
+
+## Modelling notes
+
+Craft rules that decide whether these models build at all. Cheap to follow, tedious to retrofit.
+
+- **Section wires** — every section in a loft needs the same point count, the same seam (start at the
+  trailing edge) and the same winding direction. Get this wrong and the loft quietly twists between
+  stations rather than failing. Marine blades make this worse than aerial ones: heavy skew already
+  shifts each section circumferentially, so a drifting seam is easy to mistake for skew.
+- **Cylindrical placement** — there is no "wrap onto a cylinder" operation, so do not go looking for
+  one. Build the section in 2D, then map each point onto the cylinder of radius `r` before making the
+  wire: circumferential distance `x` becomes the angle `x/r`. Marine sections are defined on
+  cylindrical surfaces by convention, so unlike small air propellers, the flat-section shortcut is
+  not available here.
+- **Fillets last** — fillet after the blades are unioned to the hub, never before, and keep the
+  radius below the local thickness. OCCT fillets fail on lofted blade roots more often than they
+  succeed; when one does, model the blend as extra loft sections instead of fighting the operation.
+  Marine root fillets are large enough that modelling them into the loft is usually the better path.
+- **Handedness** — to build the opposite-hand version, mirror in a plane that *contains* the shaft
+  axis (XZ), not in the disc plane. Both flip handedness, but the XZ mirror leaves the hub taper and
+  keyway pointing the way they started.
+- **Motion and clash checks** — script CAD has no kinematics. Where a brief asks for something to
+  sweep or articulate — CPP pitch travel, a pod slewing — sample the range at fixed poses,
+  boolean-intersect the parts at each pose, and assert the intersection volume is zero. That is the
+  check; a rendered animation is not.
+- **Export** — STEP (AP242) is the source of truth. Write the STL from the same solid at a stated
+  tessellation tolerance (0.05 mm linear deflection is a reasonable default): a blade exported at the
+  default deflection looks faceted and measures wrong.
+- **Validity** — assert the solid is valid before export, then read the STL back and confirm
+  `is_watertight` and consistent winding with [trimesh](https://trimesh.org/). Report the volume too
+  — a blade whose loft self-intersects will usually still export, and the volume is what gives it
+  away. On a marine blade also report expanded area, since that is the number the series parameters
+  claim and the easiest one to get silently wrong.
 
 ## Blade loft recipe
 
@@ -30,8 +65,9 @@ This is the aerial pipeline plus the two things marine blades always carry — s
 2. At each station set chord `c(r)`, thickness `t(r)`, pitch angle `β(r) = atan(P / (2πr))`, plus
    **skew** `θs(r)` (circumferential offset of the section, zero at the root) and **rake** `i(r)`
    (axial offset, usually linear at a fixed rake angle).
-3. Lay each section on the cylinder of radius `r` — wrapped, not flat — displaced by its skew and
-   rake. Marine sections are cambered aerofoils with a flat-ish pressure face.
+3. Map each section onto the cylinder of radius `r` (see Modelling notes — a coordinate transform,
+   not a wrap operation), displaced by its skew and rake. Marine sections are cambered aerofoils with
+   a flat-ish pressure face.
 4. Loft through the sections, cap the tip.
 5. Circular-pattern by blade count about +Z, union with the hub, fillet the root generously.
 
@@ -152,9 +188,9 @@ how they nest.
 the forward count), axial gap `0.25 D`, opposite handedness, inner shaft driving the aft propeller
 through an outer sleeve driving the forward one.
 
-**Build** — forward propeller by the loft recipe; the aft one is the same script mirrored about the
-XY plane with its own diameter and blade count. Model the shaft and sleeve as plain concentric
-stubs; annotate the bearing and seal space rather than detailing it.
+**Build** — forward propeller by the loft recipe; the aft one is the same script mirrored in the XZ
+plane (see Modelling notes) with its own diameter and blade count. Model the shaft and sleeve as
+plain concentric stubs; annotate the bearing and seal space rather than detailing it.
 
 **Done when** — handedness is a genuine mirror rather than a rotation, blade counts share no common
 factor, and the aft propeller stays inside the forward propeller's slipstream diameter at the

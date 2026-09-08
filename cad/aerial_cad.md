@@ -11,12 +11,43 @@ Nothing here has been built yet — these are the prompts.
   script is the deliverable, not a GUI session.
 - **Parameters** — open every script with a parameter block. Changing a value and re-running must
   give a valid model; nothing dimensional is hard-coded downstream.
-- **Frame** — rotation axis is +Z, thrust toward +Z, hub face on the origin. Right-hand rotation
-  unless a design says otherwise.
+- **Frame** — hub front face at `Z = 0`, thrust toward +Z, angular velocity along +Z by the
+  right-hand rule, so a blade sweeps from +X toward +Y. Rotation sense and twist sign together decide
+  which way the propeller pushes, so they are not independent settings: with ω along +Z the pressure
+  face has to end up looking toward −Z. Verify that on the built model instead of assuming it.
 - **Units** — millimetres and degrees.
 - **Output** — `cad/aerial/<slug>/` holding `model.step`, `model.stl` and the script.
 - **Shared checks** — the solid is watertight and manifold, blade count matches, nothing
-  self-intersects, blades clear each other through their full travel, both STEP and STL export.
+  self-intersects, blades clear each other through their full travel, both STEP and STL export. See
+  Modelling notes for how to actually check each of these.
+
+## Modelling notes
+
+Craft rules that decide whether these models build at all. Cheap to follow, tedious to retrofit.
+
+- **Section wires** — every section in a loft needs the same point count, the same seam (start at the
+  trailing edge) and the same winding direction. Get this wrong and the loft quietly twists between
+  stations rather than failing.
+- **Cylindrical placement** — there is no "wrap onto a cylinder" operation, so do not go looking for
+  one. Build the section in 2D, then map each point onto the cylinder of radius `r` before making the
+  wire: circumferential distance `x` becomes the angle `x/r`. On small propellers a flat section
+  placed tangentially is a fair simplification — if you take it, say so in the script.
+- **Fillets last** — fillet after the blades are unioned to the hub, never before, and keep the
+  radius below the local thickness. OCCT fillets fail on lofted blade roots more often than they
+  succeed; when one does, model the blend as extra loft sections instead of fighting the operation.
+- **Handedness** — to build the opposite-hand version, mirror in a plane that *contains* the rotation
+  axis (XZ), not in the disc plane. Both flip handedness, but the XZ mirror leaves the hub and its
+  mounting face pointing the way they started.
+- **Motion and clash checks** — script CAD has no kinematics. Where a brief asks for something to
+  sweep, fold or articulate, sample the range at fixed poses, boolean-intersect the parts at each
+  pose, and assert the intersection volume is zero. That is the check; a rendered animation is not.
+- **Export** — STEP (AP242) is the source of truth. Write the STL from the same solid at a stated
+  tessellation tolerance (0.05 mm linear deflection is a reasonable default): a blade exported at the
+  default deflection looks faceted and measures wrong.
+- **Validity** — assert the solid is valid before export, then read the STL back and confirm
+  `is_watertight` and consistent winding with [trimesh](https://trimesh.org/). Report the volume too
+  — a blade whose loft self-intersects will usually still export, and the volume is what gives it
+  away.
 
 ## Blade loft recipe
 
@@ -25,7 +56,8 @@ Most designs below are a lofted blade. Build it the same way each time and note 
 1. Pick station radii `r/R` from the hub joint (~0.15) to the tip (1.0), spaced closer outboard.
 2. At each station set chord `c(r)`, thickness ratio `t/c`, and twist `β(r) = atan(P / (2πr))` for a
    constant-pitch blade — quoted pitch is the value at `r/R = 0.75`.
-3. Scale the section airfoil to `c`, rotate it by `β`, wrap it onto the cylinder of radius `r`.
+3. Scale the section airfoil to `c`, rotate it by `β`, and map it onto the cylinder of radius `r`
+   (see Modelling notes — this is a coordinate transform, not a wrap operation).
 4. Loft through the sections and cap the tip.
 5. Circular-pattern by blade count about +Z, union with the hub, fillet the root joint (1–2 mm).
 
@@ -142,8 +174,9 @@ Size the stack against what a coaxial pair actually delivers, not double a singl
 rotor's inflow is the upper's downwash, induced power climbs steeply as spacing shrinks, and the
 pair lands well short of 2× thrust at equal power.
 
-**Build** — build the upper rotor with the loft recipe; the lower is the same script mirrored about
-the XY plane with its own pitch value. Stack them on a common axis at the spacing parameter.
+**Build** — build the upper rotor with the loft recipe; the lower is the same script mirrored in the
+XZ plane (see Modelling notes — mirroring in the disc plane also flips handedness, but turns the hub
+around with it) and given its own pitch value. Stack them on a common axis at the spacing parameter.
 
 **Done when** — handedness is a genuine mirror rather than a rotation, spacing stays a live
 parameter, and the two discs never intersect across the spacing range.
