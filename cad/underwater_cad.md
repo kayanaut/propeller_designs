@@ -2,7 +2,9 @@
 
 Build briefs for every design in [underwater_designs.md](../underwater_designs.md). Each section is
 self-contained: hand one to a CAD agent and it should produce a model without further context.
-Nothing here has been built yet — these are the prompts.
+Six designs are built and live under [`underwater/`](underwater/); each of those sections carries a
+**Built** note recording what the mesh measures against its **Done when**. Every other section is
+still a prompt only. Status at a glance, and the findings common to all six: [README.md](README.md).
 
 ## Conventions
 
@@ -139,6 +141,13 @@ ends square, close to the nozzle wall.
 **Done when** — tip clearance is uniform to within 0.1 all round, the nozzle inner wall is truly
 cylindrical over the blade sweep, and the blade tip is square rather than faired.
 
+**Built** — [`underwater/ducted-kort/model.stl`](underwater/ducted-kort/model.stl), the strongest
+of the six. Two solids: nozzle (genus 1) and propeller (genus 0). Nozzle inner Ø 250.0, length 125 =
+0.5 D, propeller Ø 247.0 at `Z = 4` centred on the nozzle mid-plane, so the tightest tip clearance is
+exactly 1.50. Open: sampled inner-wall radius runs 125.0 to 126.0 across the blade's axial span, so
+the 0.1 mm uniformity is not demonstrated — check the wall against the 19A ordinates. The hub is a
+plain Ø 65.4 cylinder with flat caps: no bore, no taper, no keyway.
+
 ### Pump-jet
 
 **Model** — rotor and stator fully enclosed in a long shroud, with a faired hub — the quiet
@@ -162,6 +171,22 @@ Stator vanes are constant-section struts, joined shroud to hub, and they carry t
 **Done when** — `V ≥ 2Z` holds, the stator is on the side the stated application calls for, the flow
 path is continuous with no step at the rotor plane, and the hub is supported only by the stator vanes.
 
+**Built** — [`underwater/pump-jet/model.stl`](underwater/pump-jet/model.stl), with three failures
+that each require a rebuild rather than a fix.
+
+1. **The rotor cuts through the shroud.** Rotor tip radius is 134.54 against a shroud inner radius of
+   125.00 — the blades pass through the duct wall by 9.5 mm. The 0.5 tip gap wants a 124.5 tip.
+2. **The stator is inside the rotor, not upstream or downstream of it.** Vanes span −15 to +15 on the
+   axis, wholly within the rotor's −42 to +42, and the two overlap radially from 45 to 127, so they
+   interpenetrate. The submarine-versus-torpedo choice this brief calls the point of the design has
+   not been made, and the geometry cannot express it until the stator moves off the rotor plane.
+3. **The axis is Y, not Z**, against the frame convention every other model in this set follows.
+
+Passing: `V = 15 ≥ 2Z = 14`, so Tyler–Sofrin cut-off holds; shroud inner Ø 250 and length 250 = 1.0 D.
+Also worth fixing on the rebuild: the 15 vanes are 12-triangle rectangular boxes rather than sections,
+and hub, shroud and vanes are three separate solids, so "the hub is supported only by the stator
+vanes" is asserted by position rather than expressed as geometry.
+
 ## Rim-driven (hubless)
 
 **Model** — blades carried on a motor-rotor ring inside a duct, with no hub and no shaft anywhere in
@@ -178,6 +203,15 @@ the inner end free. The ring is a plain annulus with a magnet-pocket band.
 **Done when** — there is no shaft, no hub bore and no centre boss; blades meet the ring with a fillet
 and are unsupported at the inner radius; and the ring-to-stator gap is uniform all round, since that
 gap is both the motor airgap and a viscous drag path.
+
+**Built** — [`underwater/rim-driven/model.stl`](underwater/rim-driven/model.stl). The rotor is
+right, and it is right in the way that matters: genuinely hubless, with no shaft, no bore and no
+centre boss anywhere in the file. Five blades cantilever inward from the ring and end free at
+r = 38.2 (0.31 R), unioned with the ring as a single solid. Duct inner Ø 250 against a ring OD of
+247 gives the 1.5 magnetic gap, uniform all round. Open: the duct is a plain rectangular annulus —
+radii 125 and 143, nothing else — with no stator band and no hydrodynamic section, and the 16 magnets
+are separate blocks overlapping the ring rather than sitting in the magnet-pocket band the brief asks
+for.
 
 ## Contra-rotating (CRP)
 
@@ -196,6 +230,18 @@ plain concentric stubs; annotate the bearing and seal space rather than detailin
 factor, and the aft propeller stays inside the forward propeller's slipstream diameter at the
 modelled gap.
 
+**Built** — [`underwater/contra-rotating/model.stl`](underwater/contra-rotating/model.stl). The
+intended pair is correct and there is a third propeller in the file that should not be there.
+
+Correct: forward propeller Ø 249.8 at `Z = 4` running on the sleeve (Ø 31 bore on a Ø 30 sleeve); aft
+propeller Ø 224.8 = 0.90 D at `Z = 5` running on the shaft; mid-plane separation 62.5 = 0.25 D; blade
+counts coprime; and the aft propeller is a genuine mirror, not a rotation — its per-blade pitch slopes
+are the exact negation of the third body's.
+
+Wrong: that third body, a second `Z = 5` propeller sitting at z = 0, is the un-mirrored original left
+behind. It carries the same hand as the forward propeller, and its Ø 15 bore clashes hard with the
+Ø 30 sleeve that runs straight through it. Delete it; nothing else in this model needs to change.
+
 ## Surface-piercing (SPP)
 
 **Model** — cleaver-bladed propeller built to run half out of the water.
@@ -211,6 +257,14 @@ edge over the outer third of the blade.
 **Done when** — every section is a wedge, not an aerofoil (check the maximum thickness sits at the
 trailing edge, not mid-chord), TE thickness meets the parameter at all stations, and the tip is
 square.
+
+**Built** — [`underwater/surface-piercing/model.stl`](underwater/surface-piercing/model.stl), and
+alone in this set it is a single watertight solid unioned with its own hub (genus 1, Ø 16.5 bore) —
+the thing every other design here failed to be. `Z = 5` is right. Ø 285.6 against the 250 parameter.
+The tip is tapered, chord about 9 mm and still falling at the last station, where the brief wants a
+cleaver outline with the tip cut square, so the planform is not yet an SPP planform. Whether the
+sections are wedges, whether TE thickness holds 3% of chord, and whether the cup exists over the outer
+third cannot be read from a mesh this sparsely sectioned.
 
 ## Supercavitating
 
@@ -228,6 +282,15 @@ straight ramp on the suction side, square base at the trailing edge.
 **Done when** — maximum thickness sits at the trailing edge, the leading-edge included angle meets
 spec at every station, and the design speed is recorded in the output — the geometry is poor below
 it, so a model without that number is not usable.
+
+**Built** — [`underwater/supercavitating/model.stl`](underwater/supercavitating/model.stl), and the
+blades are not attached to anything. The file holds four disjoint solids: a hub topping out at
+z = +35, and three blades whose lowest point is z = +39.62. That is a 4.62 mm air gap with nothing
+unioned across it — the propeller does not exist as a body, and the three blades would print as loose
+parts. `Z = 3` is right; Ø 297.7 against the 250 parameter. The hub is a plain Ø 70 × 70 cylinder with
+a straight Ø 24 bore where the brief's default is a truncated cone with a keyed taper bore. And the
+design speed is recorded nowhere — the brief is explicit that the geometry is poor below it, so a
+model without that number is not usable even once the blades are joined on.
 
 ## Skewed blade
 
