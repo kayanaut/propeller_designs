@@ -1,0 +1,35 @@
+# Source: SVA Potsdam, Potsdam Propeller Test Case (PPTC), model propeller VP1304.
+#   Geometry sheet "Case 2: Geometry PPTC" -
+#     https://www.sva-potsdam.de/wp-content/uploads/2016/03/case2_PPTC_geometry.pdf
+#   and U. Barkmann, "Potsdam Propeller Test Case (PPTC)", smp'11 Workshop, Table 1.
+#   Fetched 2026-09-10.
+#
+# TERMS: SVA state the data are free to download and free to use, asking only that SVA is
+#   credited as the source. Credit SVA Potsdam in anything built from this.
+#
+# WHY THIS ONE: VP1304 is a real, measured CONTROLLABLE PITCH propeller at D = 250.0 mm -
+#   exactly the diameter the underwater briefs use. Full CAD (IGES/STEP/3dm) and a
+#   radius-wise offsets file are downloadable; see fetch-geometry.sh in this folder.
+#
+# SOURCE CONFLICT (RESOLVED): hub diameter ratio is printed as 0.300 in Barkmann Table 1 but 0.1500 in
+#   SVA's own geometry sheet. RESOLVED from SVA's PFF definition file: hub diameter 75.0 mm on a
+#   250.0 mm propeller = 0.300. Barkmann is right; 0.1500 is the hub RADIUS over the diameter.
+#   See pptc-blade-radii.csv.
+# NOTE: the blade is designed with a 0.3 mm gap between hub and blade root near the leading
+#   and trailing edge - a real CPP feature, not a modelling error. The trailing edge at the
+#   upper radii is sharp, and the propeller was deliberately designed to shed a tip vortex.
+parameter,symbol,unit,value,note
+diameter,D,mm,250.0000,
+pitch at r/R=0.7,P0.7,mm,408.7500,
+pitch at r/R=0.75,P0.75,mm,407.3804,
+mean pitch,Pmean,mm,391.8812,
+chord at r/R=0.70,c0.70,mm,104.1670,
+chord at r/R=0.75,c0.75,mm,106.3476,
+thickness at r/R=0.75,t0.75,mm,3.7916,
+pitch ratio,P0.7/D,-,1.6350,
+mean pitch ratio,Pmean/D,-,1.5675,
+area ratio,AE/A0,-,0.7790,
+skew,theta_eff,deg,18.8000,Barkmann Table 1 prints 18.837
+hub diameter ratio,dh/D,-,0.3000,resolved from PFF: hub 75.0mm / D 250.0mm
+number of blades,z,-,5,
+direction of rotation,,-,right,right-handed in ship coordinate system

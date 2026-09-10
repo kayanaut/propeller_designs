@@ -1,0 +1,19 @@
+# Source: R.J. Boswell, "Design, Cavitation Performance, and Open-Water Performance of a
+#   Series of Research Skewed Propellers", NSRDC Report 3339 (May 1971).
+#   DTIC accession AD0732511 - https://apps.dtic.mil/sti/tr/pdf/AD0732511.pdf
+#   Particulars confirmed 2026-09-10 from secondary literature; the full blade offsets are
+#   in the report itself and in Carlton, "Marine Propellers and Propulsion", Table 6.14.
+#
+# STATUS: particulars only. Per-station chord, thickness, pitch, camber and skew
+#   distributions are NOT here - DTIC was serving a maintenance page on 2026-09-10.
+#   This is a retry, not a dead end: the report is a public US government document.
+#
+# WHY THIS ONE: this series IS the sweep the brief asks for. Four propellers identical in
+#   every respect except skew, which is the only way to attribute an effect to skew alone.
+#   The brief specifies 0/15/30/45 deg tip skew; the real series runs 0/36/72/108 deg
+#   projected. Prefer the real series values over the brief's invented ones, and say so.
+propeller,skew_tip_deg,Z,D_mm,AE_A0,thickness_form,mean_line
+DTMB 4381,0,5,304.8,0.725,NACA 66 modified,NACA a=0.8
+DTMB 4382,36,5,304.8,0.725,NACA 66 modified,NACA a=0.8
+DTMB 4383,72,5,304.8,0.725,NACA 66 modified,NACA a=0.8
+DTMB 4384,108,5,304.8,0.725,NACA 66 modified,NACA a=0.8

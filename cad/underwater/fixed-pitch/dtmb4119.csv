@@ -1,0 +1,32 @@
+# Source: DTMB 4119 model propeller geometry, Table 2 of Y. Zhu, F.D. Witherden et al.,
+# "High-Order Implicit Large-Eddy Simulation of Flow over a Marine Propeller",
+# arXiv:2104.13363, which cites the DTMB originals. Fetched 2026-09-10.
+#
+# SUBSTITUTE BASELINE, NOT Wageningen B-series. The brief asks for a B4-55 blade; those
+# tables are copyrighted and unavailable. DTMB 4119 is a real, measured, openly published
+# propeller used worldwide for CFD validation, so it is a defensible baseline to build and
+# check against - but it is a different propeller. Z=3 not 4, and it carries no skew.
+#
+# Design parameters: Z = 3, D = 0.305 m, hub ratio 0.2, design J = 0.833, right-handed.
+# Section thickness form: NACA 66 modified. Mean line: NACA a = 0.8.
+#
+# SOURCE DEFECT: the paper prints the mean line as "a = 0.08". The standard DTMB 4119
+#   definition is a = 0.8; 0.08 is not a NACA mean-line designation. Recorded, not corrected.
+# SOURCE DEFECT: the paper prints f/c at r/R = 0.9 as "0,01817" with a comma decimal.
+#   Read as 0.01817 here - the only reading consistent with its neighbours - but flagged.
+# NOTE: c/D = 0 at r/R = 1.0. The chord closes to a point at the tip; this is real DTMB 4119
+#   geometry, not a missing value. Any loft must handle a zero-chord tip station.
+#
+# c_D  = chord / diameter          P_D  = pitch / diameter
+# phiP = section pitch angle, deg  t_c  = thickness / chord    f_c = camber / chord
+r_R,c_D,P_D,phiP_deg,t_c,f_c
+0.2,0.3200,1.105,60.38,0.20550,0.01429
+0.3,0.3625,1.102,49.47,0.15530,0.02318
+0.4,0.4048,1.098,41.15,0.11800,0.02303
+0.5,0.4392,1.093,34.84,0.09016,0.02182
+0.6,0.4610,1.088,29.99,0.06960,0.02072
+0.7,0.4622,1.084,26.24,0.05418,0.02003
+0.8,0.4347,1.081,23.28,0.04206,0.01967
+0.9,0.3613,1.079,20.88,0.03321,0.01817
+0.95,0.2775,1.077,19.84,0.03228,0.01631
+1.0,0.0,1.075,18.89,0.03160,0.01175

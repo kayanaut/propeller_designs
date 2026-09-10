@@ -1,0 +1,35 @@
+# Source: Muljowidodo K., Mochammad A.S., Sapto A.N., Egi A. (2009), "Design and testing of
+# underwater thruster for SHRIMP ROV-ITB", Indian Journal of Marine Sciences 38(3), pp. 338-345.
+# https://nopr.niscpr.res.in/bitstream/123456789/6211/1/IJMS%2038(3)%20338-345.pdf
+# The paper attributes this geometry to Oosterveld (Wageningen / NSMB ducted propeller series).
+# Transcribed 2026-09-10. Values are exactly as printed; no interpolation, no smoothing.
+#
+# Nozzle 19A profile ordinates, Table 1 ("Coordinate of 19A, 22 and 24 Nozzle").
+# All three columns are PERCENTAGES OF DUCT LENGTH L, not of diameter.
+# To build:  inner radius(x) = propeller_radius + tip_clearance + (y_inner_pct/100)*L
+#            outer radius(x) = propeller_radius + tip_clearance + (y_outer_pct/100)*L
+# straight_outer=1 marks the run the source prints as "s": the outer contour is a
+# straight line there, so no ordinate is tabulated. Interpolate linearly between the
+# last tabulated outer point (x/L=5) and the trailing edge (x/L=100).
+# Length ratio of the 19A is L/D = 0.5.
+# Note y_inner = 0 across x/L 40-60 only: the cylindrical throat is 20% of L, NOT the
+# whole bore. Tip clearance is uniform over that window and nowhere else.
+x_L_pct,y_inner_L_pct,y_outer_L_pct,straight_outer
+0,18.25,,0
+1.25,14.66,20.72,0
+2.5,12.80,21.07,0
+5,10.87,20.80,0
+7.5,8.00,,1
+10,6.34,,1
+15,3.87,,1
+20,2.17,,1
+25,1.10,,1
+30,0.48,,1
+40,0,,1
+50,0,,1
+60,0,,1
+70,0.29,,1
+80,0.82,,1
+90,1.45,,1
+95,1.86,,1
+100,2.36,6.36,0

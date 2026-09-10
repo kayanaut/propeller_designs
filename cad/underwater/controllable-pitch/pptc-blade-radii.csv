@@ -1,0 +1,36 @@
+# PPTC VP1304 blade definition by radius - the 12 radial stations of SVA's own
+# propeller definition file (PFF 2.0), authored 20-Jun-97 by d. schmidt / R. Schulze.
+#
+# Source: SVA Potsdam, Potsdam Propeller Test Case, file case2_PPTC.PFF, from
+#   https://www.sva-potsdam.de/wp-content/uploads/2016/03/case2_PPTC.PFF_.zip
+#   Extracted 2026-09-10 by fetch-geometry.sh. This is REAL MEASURED GEOMETRY of a
+#   controllable pitch propeller, not a series table and not synthesised.
+#
+# TERMS: free to download and free to use; SVA must be credited as the source.
+#
+# From the file header: PropDiameter 250.00000 mm, HubDiameter 75.0 mm,
+#   ExpArRatio .77895767, No.Blades 5, No.Radii 12,
+#   No.CordPart 43 chordwise stations per radius.
+#
+# RESOLVES the conflict flagged in pptc-particulars.csv: hub diameter 75.0 on a 250.0
+#   diameter is a hub ratio of 0.300. Barkmann's Table 1 (0.300) is
+#   right; the 0.1500 in SVA's geometry sheet is the odd one out - it is the hub RADIUS
+#   over the diameter. No guesswork needed: the definition file settles it.
+#
+# The full 43-station chordwise suction/pressure offsets for each radius are in the PFF
+# itself; run fetch-geometry.sh to get them. Only the radial summary is committed here.
+#
+# Lengths in mm. Rake is axial offset. dist_lead_edge locates the section's leading edge.
+r_R,r_mm,chord_mm,pitch_mm,dist_lead_edge_mm,max_camber_mm,max_thick_mm,rake_mm
+0.300000,37.500000,45.000000,350.000000,18.250000,0.675000,13.525000,0.000000
+0.350000,43.750000,56.250000,363.750000,29.625000,1.125000,12.050000,-0.500000
+0.400000,50.000000,65.416600,376.250000,38.791600,1.570000,10.687500,-1.250000
+0.500000,62.500000,81.250000,394.500000,52.125000,2.355840,8.137500,-3.350000
+0.600000,75.000000,94.166600,405.000000,59.833400,2.837500,6.050000,-5.875000
+0.700000,87.500000,104.167000,408.750000,61.666600,3.093340,4.425000,-7.500000
+0.800000,100.000000,107.083000,403.500000,56.291600,3.051660,3.250000,-7.375000
+0.850000,106.250000,106.542000,395.500000,50.933400,2.967500,2.775000,-6.625000
+0.900000,112.500000,104.167000,382.750000,42.833400,2.671660,2.375000,-5.450000
+0.950000,118.750000,94.166600,364.500000,29.333400,2.194160,2.012500,-4.033340
+0.975000,121.875000,78.666600,352.750000,17.000000,1.715000,1.825000,-3.300000
+1.000000,125.000000,25.000000,338.750000,-14.583400,0.500000,1.637500,-2.500000

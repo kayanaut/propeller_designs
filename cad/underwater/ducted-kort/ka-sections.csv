@@ -1,0 +1,32 @@
+# Source: Muljowidodo K., Mochammad A.S., Sapto A.N., Egi A. (2009), "Design and testing of
+# underwater thruster for SHRIMP ROV-ITB", Indian Journal of Marine Sciences 38(3), pp. 338-345.
+# https://nopr.niscpr.res.in/bitstream/123456789/6211/1/IJMS%2038(3)%20338-345.pdf
+# The paper attributes this geometry to Oosterveld (Wageningen / NSMB ducted propeller series).
+# Transcribed 2026-09-10. Values are exactly as printed; no interpolation, no smoothing.
+#
+# Ka-series blade section offsets, Tables 3 and 4.
+# Ordinates are PERCENTAGES OF LOCAL MAXIMUM THICKNESS t_max, measured from the
+# position of maximum thickness toward the named edge, referenced to the pitch line
+# through the PRESSURE side of the blade (source Fig. 9).
+# side=suction : stations run from max-thickness position toward the LEADING edge.
+# side=pressure: stations run from max-thickness position toward the TRAILING edge;
+#                column "TE" is the trailing-edge ordinate itself.
+#
+# DEFECT: the source prints the pressure side for r/R 0.2-0.5 only.
+#         r/R 0.6, 0.7, 0.8, 0.9, 1.0 are NOT IN SOURCE - not omitted here by choice.
+#         Do not interpolate across that gap; fetch Oosterveld (1970) directly.
+side,r_R,p20,p40,p60,p80,p90,TE
+suction,0.2,97.92,90.83,77.19,55.00,38.75,
+suction,0.3,97.63,90.06,75.62,53.02,37.87,
+suction,0.4,97.22,88.89,73.61,50.00,34.72,
+suction,0.5,96.77,87.10,70.46,45.84,30.22,
+suction,0.6,96.47,85.89,68.26,43.58,28.59,
+suction,0.7,96.58,86.33,69.24,45.31,30.79,
+suction,0.8,96.76,87.04,70.84,48.16,34.39,
+suction,0.9,97.17,88.09,72.94,51.75,38.87,
+suction,1.0,97.00,88.00,73.00,52.00,39.25,
+pressure,0.2,0,0.10,1.77,7.29,,20.21
+pressure,0.3,0,0,1.07,4.62,,13.85
+pressure,0.4,0,0,0.56,2.36,,9.17
+pressure,0.5,0,0,0.17,0.68,,6.62
+# r/R 0.6-1.0 NOT IN SOURCE

@@ -1,0 +1,35 @@
+# Source: Muljowidodo K., Mochammad A.S., Sapto A.N., Egi A. (2009), "Design and testing of
+# underwater thruster for SHRIMP ROV-ITB", Indian Journal of Marine Sciences 38(3), pp. 338-345.
+# https://nopr.niscpr.res.in/bitstream/123456789/6211/1/IJMS%2038(3)%20338-345.pdf
+# The paper attributes this geometry to Oosterveld (Wageningen / NSMB ducted propeller series).
+# Transcribed 2026-09-10. Values are exactly as printed; no interpolation, no smoothing.
+#
+# Ka-series maximum thickness and its chordwise position (Table 5), and the camber
+# correction factor K_f (Table 6).
+# tmax_D    = maximum thickness / propeller diameter
+# Xtmax_cr  = chordwise position of maximum thickness / local chord
+# Kf        = camber correction; max camber = tmax/2 - Kf*tmax at inner radii,
+#             and is tmax/2 from 0.6R to the tip.
+#
+# DEFECT: the source prints tmax_D = 0.004 at r/R = 0.2. That is impossible - it is
+#         smaller than every station outboard of it, against a taper that must
+#         decrease monotonically outward, and the r/R=0.3 value is 0.0352. Almost
+#         certainly a dropped digit (0.0406 / 0.040 would fit the taper) but the
+#         correct value is NOT KNOWN, so the cell is left empty rather than guessed.
+# DEFECT: the source prints K_f for r/R 0.2-0.5 only. 0.6-1.0 NOT IN SOURCE, which is
+#         consistent with the text: camber is exactly tmax/2 from 0.6R outward, so Kf=0
+#         there. That reading is inferred, not printed - verify against Oosterveld.
+#
+# Related: chord law c(r) = K(r) * D * EAR / Z. The K(r) table is NOT IN SOURCE - the
+# paper's own cross-reference to it is misnumbered (points at the section table).
+# Ka series has no rake. Hub diameter is D/6.
+r_R,tmax_D,Xtmax_cr,Kf
+0.2,,0.35,0.287
+0.3,0.0352,0.398,0.183
+0.4,0.0300,0.46,0.115
+0.5,0.0245,0.491,0.072
+0.6,0.0190,0.5,
+0.7,0.0138,0.5,
+0.8,0.0092,0.5,
+0.9,0.0061,0.5,
+1.0,0.0050,0.5,
