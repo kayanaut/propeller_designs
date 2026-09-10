@@ -1,0 +1,38 @@
+# XV-15 tiltrotor proprotor - REAL published reference geometry.
+#
+# Source: XV-15 full-scale proprotor, as documented in the open tiltrotor literature and
+#   NASA reports; particulars cross-checked against Flexcompute's Flow360 XV-15 BET-disk
+#   case study (https://docs.flexcompute.com/projects/flow360/en/release-24.11/caseStudies/
+#   XV15BETDisk/XV15BETDisk.html) and NASA NTRS 20040081235 ("Rotor Design Options for
+#   Improving XV-15 Whirl-Flutter Stability Margins"). Compiled 2026-09-11.
+#
+# SUBSTITUTE REFERENCE, NOT THIS BRIEF'S ROTOR. The brief specifies D = 1500 mm and Z = 5.
+# The XV-15 is D = 300 in (7620 mm) with Z = 3 - a full-scale tiltrotor, not a UAV proprotor.
+# It is here because it is the best-documented real proprotor that must work in BOTH hover
+# and wing-borne cruise, which is exactly this design's problem. Use its planform and twist
+# philosophy scaled; do not treat its absolute dimensions as the design.
+#
+# PARTICULARS
+#   radius 150 in (D = 300 in = 7620 mm), 3 blades, reference chord 14 in
+#   aspect ratio 10.71, solidity 0.089
+#   linear structural twist -40.25 deg root cutoff to tip  <- note how much more twist a
+#     proprotor carries than a propeller; that is the hover/cruise compromise made visible
+#
+# PLANFORM: 16.6 in chord at r/R 0.091 (inboard aerodynamic start), tapering LINEARLY to
+#   14.0 in by r/R 0.25, then CONSTANT 14.0 in to the tip. Constant outboard chord is
+#   characteristic - it is not a faired propeller tip.
+#
+# AEROFOILS - five NACA 6-series sections blended along the span:
+#   r/R 0.09  NACA 64-935
+#   r/R 0.17  NACA 64-528
+#   r/R 0.51  NACA 64-118
+#   r/R 0.80  NACA 64-(1.5)12
+#   r/R 1.00  NACA 64-208
+# 6-series ordinates are TABULATED, not equation-derived, so they cannot be generated the
+# way four-digit sections can. They are NOT in this repo - that requirement stays open.
+#
+# The rows below are the planform breakpoints as published, not a resampled table.
+r_R,chord_in,c_D,note
+0.091,16.600,0.055333,inboard aerodynamic start
+0.250,14.000,0.046667,end of linear taper
+1.000,14.000,0.046667,constant chord to the tip
