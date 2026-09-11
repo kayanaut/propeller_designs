@@ -30,6 +30,13 @@
 # The brief assumes "t/c 14% at the root tapering to 9% at the tip". The real blade is far
 # thicker inboard because the aerofoil blends into the hub boss there. Trust this file over
 # the brief's figure, and do not loft the inboard stations as if they were aerofoils.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 r_R,station_in,c_D,chord_in,pitch_quoted_in,pitch_le_te_in,pitch_prather_in,sweep_y_in,rake_z_in,thickness_ratio,twist_deg,max_thick_in,cross_section_in2,zhigh_in,cgy_in,cgz_in
 0.000000,0.0000,0.080000,0.8000,2.1503,0.0000,0.0000,0.4000,0.0000,0.4000,0.0000,0.3200,0.0000,0.0450,0.0000,0.0000
 0.019000,0.0950,0.076650,0.7665,2.4719,0.0089,-0.4120,0.3948,0.0061,0.3974,0.8509,0.3046,0.2060,0.0500,0.0068,-0.1003

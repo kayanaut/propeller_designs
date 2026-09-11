@@ -23,6 +23,13 @@
 # Related: chord law c(r) = K(r) * D * EAR / Z. The K(r) table is NOT IN SOURCE - the
 # paper's own cross-reference to it is misnumbered (points at the section table).
 # Ka series has no rake. Hub diameter is D/6.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 r_R,tmax_D,Xtmax_cr,Kf
 0.2,,0.35,0.287
 0.3,0.0352,0.398,0.183

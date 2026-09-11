@@ -21,6 +21,13 @@
 # itself; run fetch-geometry.sh to get them. Only the radial summary is committed here.
 #
 # Lengths in mm. Rake is axial offset. dist_lead_edge locates the section's leading edge.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 r_R,r_mm,chord_mm,pitch_mm,dist_lead_edge_mm,max_camber_mm,max_thick_mm,rake_mm
 0.300000,37.500000,45.000000,350.000000,18.250000,0.675000,13.525000,0.000000
 0.350000,43.750000,56.250000,363.750000,29.625000,1.125000,12.050000,-0.500000

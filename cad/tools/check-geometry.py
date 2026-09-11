@@ -148,6 +148,73 @@ for rs in props.values():
             if a[k] != b[k]: diff.add(k)
 ok(not diff, "skew sweep varies only in skew", f"also differs in {sorted(diff)}")
 
+FILLETED = [("fixed-pitch/blade-planform.csv", None, "FPP"),
+            ("skewed/skew-sweep.csv", ("propeller", "DTMB 4381"), "skewed"),
+            ("pump-jet/rotor-schedule.csv", None, "pump-jet"),
+            ("supercavitating/blade-planform.csv", None, "supercav"),
+            ("surface-piercing/cleaver-planform.csv", None, "SPP"),
+            ("rim-driven/blade-schedule.csv", None, "rim-driven"),
+            ("contra-rotating/crp-discs.csv", ("disc", "forward"), "CRP fwd")]
+THICK = {"FPP":"t_D","skewed":"t_D","pump-jet":"t_D","supercav":"t_D",
+         "SPP":"te_thick_c","rim-driven":"t_D","CRP fwd":"t_D"}
+CAMBERED = [("fixed-pitch/blade-planform.csv", None, "FPP"),
+            ("skewed/skew-sweep.csv", ("propeller", "DTMB 4381"), "skewed"),
+            ("pump-jet/rotor-schedule.csv", None, "pump-jet"),
+            ("rim-driven/blade-schedule.csv", None, "rim-driven"),
+            ("contra-rotating/crp-discs.csv", ("disc", "forward"), "CRP fwd")]
+WEDGES = [("supercavitating/blade-planform.csv", "supercav"),
+          ("surface-piercing/cleaver-planform.csv", "SPP cleaver")]
+
+# ---- 11. every table declares how to read itself -----------------------
+# The CAD critique: a script author reading only a CSV had no way to know the pitch datum,
+# the generator line, or which rake convention applies. Prose in the briefs does not travel
+# with the file. Every geometry CSV must carry the declaration block.
+for f in sorted(glob.glob(os.path.join(ROOT, "*", "*.csv"))):
+    head = "".join(l for l in open(f) if l.startswith("#"))
+    for tag in ("# FRAME ", "# UNITS ", "# PITCH ", "# AXIS ", "# RAKE ", "# WIRE "):
+        ok(tag in head, f"declares {tag.strip('# ')}: {os.path.basename(f)}", "")
+
+# ---- 12. root fillets stay below local thickness -----------------------
+# The brief's own rule: "keep the radius below the local thickness". Beside t_D in the same
+# table, so this is one line rather than a cross-file comparison that would drift.
+for rel, filt, lab in FILLETED:
+    rows = rd(rel)
+    if filt: rows = [x for x in rows if x[filt[0]] == filt[1]]
+    bad = [x for x in rows
+           if float(x["fillet_r_D"]) > 0 and float(x["fillet_r_D"]) >= float(x[THICK[lab]])]
+    ok(not bad, f"root fillet stays below local thickness: {lab}",
+       f"{len(bad)} stations violate it")
+    ok(max(float(x["fillet_r_D"]) for x in rows) > 0, f"a root fillet actually exists: {lab}", "")
+
+# ---- 13. camber present on lifting blades, absent on wedges ------------
+for rel, filt, lab in CAMBERED:
+    rows = rd(rel)
+    if filt: rows = [x for x in rows if x[filt[0]] == filt[1]]
+    ok("f_c" in rows[0], f"lifting blade carries camber: {lab}",
+       "pitch sets the angle; camber sets the lift at that angle")
+    if "f_c" in rows[0]:
+        ok(max(float(x["f_c"]) for x in rows) > 0.001, f"camber is non-trivial: {lab}", "")
+for rel, lab in WEDGES:
+    ok("f_c" not in rd(rel)[0], f"wedge section carries NO camber (correct): {lab}",
+       "a supercavitating/cleaver wedge has no mean-line camber")
+
+# ---- 14. hubs exist where they should, and NOT where they should not ---
+for slug in ["fixed-pitch","skewed","tip-loaded","supercavitating","surface-piercing",
+             "toroidal","ducted-kort","controllable-pitch","contra-rotating"]:
+    path = os.path.join(ROOT, slug, "hub.csv")
+    ok(os.path.exists(path), f"hub defined: {slug}", "a blade with no hub is not a propeller")
+    if os.path.exists(path):
+        d = {x["parameter"]: float(x["value"]) for x in rd(f"{slug}/hub.csv")}
+        ok(d["bore_dia_forward"] < d["hub_dia_forward"],
+           f"hub bore fits inside the hub: {slug}",
+           f"bore {d['bore_dia_forward']} vs hub {d['hub_dia_forward']}")
+        ok(d["bore_dia_forward"] > d["bore_dia_aft"], f"bore is tapered: {slug}", "")
+        ok(d["wall_min"] > 1.0, f"hub wall is not paper-thin: {slug}", f"{d['wall_min']} mm")
+# rim-driven is HUBLESS and that is its defining feature. Assert the file's ABSENCE so the
+# omission is not "fixed" by someone later.
+ok(not os.path.exists(os.path.join(ROOT, "rim-driven", "hub.csv")),
+   "rim-driven has NO hub file (it is hubless by definition)", "")
+
 # ---- 7. every SYNTHETIC file declares what it is not --------------------
 for f in glob.glob(os.path.join(ROOT, "*", "*.csv")):
     head = "".join(l for l in open(f) if l.startswith("#"))

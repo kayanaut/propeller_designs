@@ -32,6 +32,13 @@
 # way four-digit sections can. They are NOT in this repo - that requirement stays open.
 #
 # The rows below are the planform breakpoints as published, not a resampled table.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 r_R,chord_in,c_D,note
 0.091,16.600,0.055333,inboard aerodynamic start
 0.250,14.000,0.046667,end of linear taper

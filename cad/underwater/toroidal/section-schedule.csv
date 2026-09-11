@@ -12,6 +12,13 @@
 #
 # Marine sections throughout: blunt trailing edge, leading-edge radius chosen for cavitation,
 # never a knife edge. t_c is reported so the section can be scaled from any aerofoil.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 s,span_frac,c_D,t_D,t_c
 0.000000,0.000000,0.160000,0.038000,0.237500
 0.016667,0.002739,0.163584,0.037956,0.232029

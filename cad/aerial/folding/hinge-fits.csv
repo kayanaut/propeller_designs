@@ -12,6 +12,13 @@
 # MASS must sit outboard of the hinge pin, so spinning up deploys the blade and holds it
 # against the stop. Get that wrong and the prop never opens, whatever the fit.
 # Hinge offset 10 mm from the rotation axis, root tang 3 mm thick. All mm.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 fit_class,pin_dia_mm,bore_min_mm,bore_max_mm,clearance_min_mm,clearance_max_mm,note
 H7/g6 close running,3.000000,3.006000,3.020000,0.006000,0.020000,preferred for a fold hinge
 H7/f7 free running,3.000000,3.016000,3.041000,0.016000,0.041000,if grit ingress is likely

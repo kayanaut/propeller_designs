@@ -18,6 +18,13 @@
 # NOTE: the blade is designed with a 0.3 mm gap between hub and blade root near the leading
 #   and trailing edge - a real CPP feature, not a modelling error. The trailing edge at the
 #   upper radii is sharp, and the propeller was deliberately designed to shed a tip vortex.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 parameter,symbol,unit,value,note
 diameter,D,mm,250.0000,
 pitch at r/R=0.7,P0.7,mm,408.7500,

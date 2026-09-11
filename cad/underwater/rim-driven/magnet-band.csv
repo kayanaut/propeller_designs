@@ -11,6 +11,13 @@
 # That gap is both the motor airgap and a viscous drag path - it is the number to hold.
 # Pocket pitch 22.50 deg; arc length at the OD 48.498 mm; width is arc minus the bridge.
 # All lengths mm, angles degrees.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 pocket,angle_deg,r_outer_mm,r_inner_mm,width_mm,axial_len_mm,depth_mm
 0,0.000000,123.500000,118.500000,47.298337,23.500000,5.000000
 1,22.500000,123.500000,118.500000,47.298337,23.500000,5.000000

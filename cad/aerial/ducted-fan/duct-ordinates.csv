@@ -15,6 +15,13 @@
 # 1.000) so tip clearance is uniform there - the same requirement the marine Kort nozzle has.
 # Exit contracts to sqrt(0.85) = 0.9220 of the fan radius, giving the area ratio.
 # Radii are fractions of the FAN radius (45 mm). Sharp TE - aerial, no marine floor.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 x_L,r_inner_fanR,r_outer_fanR
 0.000000,1.133333,1.133338
 0.025000,1.059631,1.081420

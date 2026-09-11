@@ -19,6 +19,13 @@
 #
 # c_D  = chord / diameter          P_D  = pitch / diameter
 # phiP = section pitch angle, deg  t_c  = thickness / chord    f_c = camber / chord
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 r_R,c_D,P_D,phiP_deg,t_c,f_c
 0.2,0.3200,1.105,60.38,0.20550,0.01429
 0.3,0.3625,1.102,49.47,0.15530,0.02318

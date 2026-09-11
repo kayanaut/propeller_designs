@@ -14,6 +14,13 @@
 # the full +/-25 deg is reached with no link-to-hub interference at either stop. That is a
 # kinematic check on the assembly, not something this table can answer.
 # All mm.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 designation,bore_mm,outer_dia_mm,width_mm,note
 MR128,8.000000,12.000000,3.500000,thin-section, lightest
 688,8.000000,16.000000,5.000000,wider race, higher radial capacity

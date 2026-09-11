@@ -13,6 +13,13 @@
 # of that sentence are inconsistent. Clark-Y (~11.7%) is the section that can carry the brief's
 # thickness schedule; E63 is the choice if low-Re lift matters more than thickness.
 # x,y are fractions of chord.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 x_c,y_c
 1.000000,0.000000
 0.997190,0.001210

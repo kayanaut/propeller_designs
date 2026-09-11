@@ -15,6 +15,13 @@
 # rake_linear_R is the underlying 15 deg linear rake for comparison inboard of the blend.
 # For the CLT variant this file does NOT apply: CLT is a discrete end plate on the PRESSURE
 # side, a different construction. Getting the side backwards turns one design into the other.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 r_R,u,tip_rake_R,rake_linear_R
 0.850000,0.000000,0.000000,0.227757
 0.854839,0.032258,0.001286,0.229053

@@ -1,6 +1,9 @@
 # CAD Models
 
 Briefs: [aerial_cad.md](aerial_cad.md) · [underwater_cad.md](underwater_cad.md).
+Datums: [CONVENTIONS.md](CONVENTIONS.md) — pitch line, generator line, rake and camber
+definitions the briefs leave implicit. Every CSV repeats them in its own header, so a table
+never has to be interpreted from memory.
 Models: [underwater/](underwater/) · [aerial/](aerial/), one folder per design, each with a
 `source-geometry.md` naming the data it needs and the CSVs holding what has been obtained.
 Generated tables come from [tools/make-geometry.py](tools/make-geometry.py) (underwater) and

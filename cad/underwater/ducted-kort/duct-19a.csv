@@ -14,6 +14,13 @@
 # Length ratio of the 19A is L/D = 0.5.
 # Note y_inner = 0 across x/L 40-60 only: the cylindrical throat is 20% of L, NOT the
 # whole bore. Tip clearance is uniform over that window and nowhere else.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 x_L_pct,y_inner_L_pct,y_outer_L_pct,straight_outer
 0,18.25,,0
 1.25,14.66,20.72,0

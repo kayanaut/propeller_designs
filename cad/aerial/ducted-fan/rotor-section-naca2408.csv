@@ -9,6 +9,13 @@
 #
 # Role: thin high-solidity rotor section. 8% thick: a ducted fan rotor is thinner than an open propeller because the duct unloads the tip.
 # Exact and re-derivable. Regenerate rather than edit.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 x_c,y_t,y_camber,x_upper,y_upper,x_lower,y_lower
 0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000
 0.000385,0.002312,0.000039,0.000156,0.002339,0.000615,-0.002262

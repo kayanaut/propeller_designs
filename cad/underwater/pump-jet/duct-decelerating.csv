@@ -14,6 +14,13 @@
 #
 # The built model's rotor tip currently overruns the shroud by 9.5 mm. Rebuild the rotor to
 # the throat radius here before trusting anything downstream of it.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 x_L,r_inner_throat,r_outer_throat
 0.000000,1.060000,1.068000
 0.025000,1.059125,1.094088

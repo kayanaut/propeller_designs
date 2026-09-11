@@ -12,6 +12,13 @@
 # carry the motor pod - so they are structural as well as aerodynamic. Section is in
 # stator-vane-naca4412.csv; stagger is the angle the chord makes with the axis.
 # Vanes sit DOWNSTREAM of the rotor, per the brief.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 vane,angle_deg,r_inner_fanR,r_outer_fanR,stagger_deg
 0,0.000000,0.450000,1.000000,25.000000
 1,32.727273,0.450000,1.000000,25.000000

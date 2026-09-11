@@ -15,6 +15,13 @@
 # DEFECT: the source prints the pressure side for r/R 0.2-0.5 only.
 #         r/R 0.6, 0.7, 0.8, 0.9, 1.0 are NOT IN SOURCE - not omitted here by choice.
 #         Do not interpolate across that gap; fetch Oosterveld (1970) directly.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 side,r_R,p20,p40,p60,p80,p90,TE
 suction,0.2,97.92,90.83,77.19,55.00,38.75,
 suction,0.3,97.63,90.06,75.62,53.02,37.87,

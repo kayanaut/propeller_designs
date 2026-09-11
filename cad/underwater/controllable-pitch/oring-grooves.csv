@@ -16,6 +16,13 @@
 # static check and size the running seal properly.
 #
 # All lengths mm.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 cord_dia_mm,squeeze_frac,groove_depth_mm,groove_width_mm,corner_r_mm,depth_ratio
 1.780000,0.200000,1.424000,2.314000,0.178000,0.800000
 2.620000,0.200000,2.096000,3.406000,0.262000,0.800000

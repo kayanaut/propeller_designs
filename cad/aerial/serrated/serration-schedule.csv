@@ -16,6 +16,13 @@
 # Local chord is taken from the real APC 10x5E (../fixed-pitch/apc-10x5e.csv).
 # Export the PLAIN blade alongside the serrated one - the brief asks for the pair so they can
 # be compared on a thrust stand.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 r_R,chord_mm,amplitude_mm,wavelength_mm,teeth_per_chord
 0.500000,25.362464,1.268123,2.536246,10
 0.520000,24.948429,1.247421,2.494843,10

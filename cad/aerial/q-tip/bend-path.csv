@@ -16,6 +16,13 @@
 #
 # r_developed is arc position along the blade; r_projected is the radius that actually sweeps.
 # z_R is aft displacement as a fraction of R (negative = aft).
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 u,r_developed_R,r_projected_R,z_R,bend_deg
 0.000000,0.920000,0.920000,-0.000000,0.000000
 0.040000,0.923200,0.923199,-0.000081,2.910626

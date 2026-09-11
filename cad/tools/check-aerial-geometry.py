@@ -153,6 +153,27 @@ ok(float(lo[0]["P_D"]) > float(up[0]["P_D"]),
    f"upper {up[0]['P_D']} lower {lo[0]['P_D']}")
 ok(up[0]["hand"] != lo[0]["hand"], "coaxial rotors are opposite hand", "")
 
+# ---- 9b. every table declares how to read itself -----------------------
+# Aerial declares a DIFFERENT axis datum from marine (leading edge, not mid-chord), because
+# APC define sweep and rake off the mould LE parting line. That is exactly why the datum has
+# to travel with the file instead of living in prose.
+for f in sorted(glob.glob(os.path.join(ROOT, "*", "*.csv"))):
+    head = "".join(l for l in open(f) if l.startswith("#"))
+    for tag in ("# FRAME ", "# UNITS ", "# PITCH ", "# AXIS ", "# RAKE ", "# WIRE "):
+        ok(tag in head, f"declares {tag.strip('# ')}: {os.path.basename(f)}", "")
+    if "# AXIS " in head:
+        ok("LEADING EDGE" in head, f"aerial axis datum is the LE: {os.path.basename(f)}", "")
+
+# ---- 9c. camber on the lifting blades ----------------------------------
+for rel, filt, lab in [("custom-carbon/blade-planform.csv", None, "custom carbon"),
+                       ("coaxial/rotor-pair.csv", ("rotor", "upper"), "coaxial upper"),
+                       ("ducted-fan/rotor-schedule.csv", None, "EDF rotor")]:
+    rows = rd(rel)
+    if filt: rows = [x for x in rows if x[filt[0]] == filt[1]]
+    ok("f_c" in rows[0], f"lifting blade carries camber: {lab}", "")
+    if "f_c" in rows[0]:
+        ok(max(float(x["f_c"]) for x in rows) > 0.001, f"camber is non-trivial: {lab}", "")
+
 # ---- 10. provenance across every aerial CSV ----------------------------
 for f in glob.glob(os.path.join(ROOT, "*", "*.csv")):
     head = "".join(l for l in open(f) if l.startswith("#"))

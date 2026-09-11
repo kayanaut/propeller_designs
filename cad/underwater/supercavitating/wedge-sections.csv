@@ -17,6 +17,13 @@
 #
 # Section is constant in form across radius; scale by local chord.
 # x_c from 0 (sharp LE) to 1 (TE). y_pressure is the flat face; y_suction the ramp.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 x_c,y_pressure,y_suction
 0.000000,0.000000,0.000000
 0.025000,0.000000,0.001000

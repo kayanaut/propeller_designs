@@ -12,6 +12,13 @@
 # Clark-Y is the brief's first choice for the low-Re fixed-pitch blade: flat lower surface,
 # ~11.7% thick, and the section APC's own blades approximate over the outer span.
 # x,y are fractions of chord.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 surface,x_c,y_c
 upper,0.0000000,0.0000000
 upper,0.0005000,0.0023390

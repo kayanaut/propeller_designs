@@ -12,6 +12,13 @@
 #   every respect except skew, which is the only way to attribute an effect to skew alone.
 #   The brief specifies 0/15/30/45 deg tip skew; the real series runs 0/36/72/108 deg
 #   projected. Prefer the real series values over the brief's invented ones, and say so.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/underwater_cad.md Conventions.
+# UNITS  as labelled per column. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (pitch line through the PRESSURE side). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at 50% chord (marine); sections placed and rotated about it.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. See Modelling notes.
 propeller,skew_tip_deg,Z,D_mm,AE_A0,thickness_form,mean_line
 DTMB 4381,0,5,304.8,0.725,NACA 66 modified,NACA a=0.8
 DTMB 4382,36,5,304.8,0.725,NACA 66 modified,NACA a=0.8

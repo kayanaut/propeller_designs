@@ -18,6 +18,13 @@
 #
 # Tip Mach cap 0.55 from the brief. At D = 1500 mm that caps tip speed at
 # 187.2 m/s = 2383 rpm. Check any rpm choice against that.
+#
+# FRAME  hub front face Z=0, thrust +Z, omega +Z right-hand. See cad/aerial_cad.md Conventions.
+# UNITS  mm, degrees. r_R = r/R. c_D = c/D. See cad/CONVENTIONS.md.
+# PITCH  FACE pitch (flat-bottom datum, = APC 'quoted'). beta = atan(P/(2*pi*r)).
+# AXIS   generator line at the LEADING EDGE (aerial) - APC define sweep and rake that way.
+# RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
+# WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 r_R,c_D,twist_hover_deg,twist_cruise_deg,twist_blended_deg
 0.150000,0.052117,33.016893,76.744881,54.880887
 0.192500,0.049801,27.983107,72.709954,50.346530
