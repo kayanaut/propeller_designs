@@ -7,9 +7,9 @@ FoamFile
 }
 
 // The cells that spin with the rotor (the MRF zone).
-// Radius 57 mm covers the measured rotor tip (55.5 mm); x = -22..22 mm covers
-// the rotor (-15..18 mm). The duct is listed in constant/MRFProperties
-// nonRotatingPatches, so it stays still even where it lies inside this zone.
+// Radius 51 mm sits between the rotor envelope (49.4 mm) and the duct throat
+// (52 mm); x = -16.5..16.5 mm covers the whole rotor including the hub ends
+// (-15..15 mm). scripts/validate_geometry.py checks these margins before meshing.
 
 actions
 (
@@ -18,8 +18,8 @@ actions
         type    cellZoneSet;
         action  new;
         source  cylinderToCell;
-        p1      (-0.022 0 0);
-        p2      ( 0.022 0 0);
-        radius  0.057;
+        p1      (-0.0165 0 0);
+        p2      ( 0.0165 0 0);
+        radius  0.051;
     }
 );

@@ -1,7 +1,0 @@
-FoamFile { format ascii; class dictionary; object topoSetDict; }
-actions
-(
- { name mrfZone; type cellSet; action new; source cylinderToCell; sourceInfo { p1 (-0.022 0 0); p2 (0.022 0 0); radius 0.0515; } }
- { name mrfZone; type cellZoneSet; action new; source setToCellZone; sourceInfo { set mrfZone; } }
-);
-

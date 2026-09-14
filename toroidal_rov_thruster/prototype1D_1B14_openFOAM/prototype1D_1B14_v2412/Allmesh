@@ -2,31 +2,45 @@
 cd "${0%/*}" || exit 1                              # Run from this directory
 . ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # OpenFOAM run functions
 #------------------------------------------------------------------------------
-# Build the mesh.   Usage: ./Allmesh [L0|L1|L2]
+# Build and check the mesh.   Usage: ./Allmesh [L0|L1|L2]
 # Run inside an OpenFOAM shell (start one by typing: openfoam2412).
 # Run ./Allclean first when re-meshing: steps with an existing log are skipped.
+# Every check is mandatory: the script stops at the first failure.
 
 level="${1:-L0}"
-geom=../../toroidal_rov_prototype1B
+
+require()   # require <pattern> <log>: stop unless the log contains the pattern
+{
+    grep -q "$1" "$2" || { echo "CHECK FAILED: '$1' not found in $2"; exit 1; }
+}
 
 python3 scripts/configure_mesh.py "$level" || exit 1
 
-# The prototype 1B STLs are in millimetres with the rotation axis along z.
-# This case needs metres with the axis along +x.
+# Geometry: units, closed outward shells, envelope, duct clearance, MRF margins.
+# Copies geometry/*.stl to constant/triSurface/.
+python3 scripts/validate_geometry.py > log.validateGeometry 2>&1
+status=$?
+cat log.validateGeometry
+[ "$status" -eq 0 ] || exit 1
+
 for part in rotor duct
 do
-    runApplication -s "$part" surfaceTransformPoints \
-        -read-scale 0.001 -rotate '((0 0 1) (1 0 0))' \
-        "$geom/prototype1B_$part.stl" "constant/triSurface/${part}_1B14.stl" \
-        || exit 1
-    runApplication -s "$part" surfaceCheck "constant/triSurface/${part}_1B14.stl"
+    log="log.surfaceCheck.$part"
+    runApplication -s "$part" surfaceCheck -checkSelfIntersection \
+        "constant/triSurface/${part}_1B14.stl"
+    require "Surface has no illegal triangles." "$log"
+    require "Surface is closed." "$log"
+    require "Number of unconnected parts : 1$" "$log"
+    require "Surface is not self-intersecting" "$log"
 done
 
 runApplication blockMesh || exit 1
 runApplication surfaceFeatureExtract || exit 1
 runApplication snappyHexMesh -overwrite || exit 1
 runApplication topoSet || exit 1
+require "mrfZone now size [1-9]" log.topoSet
 runApplication checkMesh
+require "Mesh OK." log.checkMesh
 
 touch case.foam                                     # ParaView opens this file
 

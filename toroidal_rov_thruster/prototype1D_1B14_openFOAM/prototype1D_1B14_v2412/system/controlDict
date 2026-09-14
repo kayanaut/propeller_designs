@@ -1,90 +1,134 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2412                                  |
-|   \\  /    A nd           | Website:  www.openfoam.com                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 FoamFile
 {
-    version         2;
-    format          ascii;
-    class           dictionary;
-    object          controlDict;
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
 }
 
 application     simpleFoam;
 
+// Steady solver: each "time step" is one SIMPLE iteration.
 startFrom       latestTime;
-
 startTime       0;
-
 stopAt          endTime;
-
-endTime         2000;
-
+endTime         5000;       // set by ./Allsolve
 deltaT          1;
 
 writeControl    timeStep;
-
-writeInterval   250;
-
+writeInterval   500;
 purgeWrite      2;
-
 writeFormat     binary;
-
 writePrecision  8;
-
 runTimeModifiable true;
 
 functions
 {
+    // Force and moment on the rotor: postProcessing/rotorForces/0/
     rotorForces
     {
         type            forces;
-        libs            ( forces );
-        patches         ( rotor );
+        libs            (forces);
+        patches         (rotor);
         rho             rhoInf;
         rhoInf          1025;
-        CofR            ( 0 0 0 );
+        CofR            (0 0 0);
         writeControl    timeStep;
         writeInterval   10;
     }
+
+    // Force on the duct: postProcessing/ductForces/0/
     ductForces
     {
         type            forces;
-        libs            ( forces );
-        patches         ( duct );
+        libs            (forces);
+        patches         (duct);
         rho             rhoInf;
         rhoInf          1025;
-        CofR            ( 0 0 0 );
+        CofR            (0 0 0);
         writeControl    timeStep;
         writeInterval   10;
     }
+
+    // Volume flow through the rotor annulus just upstream of the blades, m3/s:
+    // postProcessing/ductFlow/0/. Positive means water enters through the
+    // bellmouth (-x) and the jet leaves through the diffuser (+x).
+    ductFlow
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        regionType      sampledSurface;
+        name            rotorInflowPlane;
+        sampledSurfaceDict
+        {
+            type        cuttingPlane;
+            point       (-0.013 0 0);
+            normal      (1 0 0);
+            zones       (mrfZone);
+            interpolate false;
+        }
+        operation       areaNormalIntegrate;
+        fields          (U);
+        writeFields     false;
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    // Residuals: postProcessing/residuals/0/solverInfo.dat
     residuals
     {
         type            solverInfo;
-        libs            ( utilityFunctionObjects );
-        fields          ( U p k omega );
+        libs            (utilityFunctionObjects);
+        fields          (U p k omega);
         writeControl    timeStep;
         writeInterval   1;
     }
+
+    // Wall y+ on rotor and duct: postProcessing/yPlus/0/yPlus.dat
     yPlus
     {
         type            yPlus;
-        libs            ( fieldFunctionObjects );
+        libs            (fieldFunctionObjects);
         writeControl    writeTime;
     }
+
+    // Lowest wall pressure on each part, for the cavitation margin:
+    // postProcessing/{rotor,duct}Pressure/0/. p is kinematic (Pa / 1025 kg/m3).
+    rotorPressure
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        regionType      patch;
+        name            rotor;
+        operation       min;
+        fields          (p);
+        writeFields     false;
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    ductPressure
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        regionType      patch;
+        name            duct;
+        operation       min;
+        fields          (p);
+        writeFields     false;
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    // Pressure range anywhere in the water: postProcessing/pressureRange/.
+    // The minimum can sit on the MRF zone boundary, so judge cavitation from
+    // the wall values above.
     pressureRange
     {
         type            fieldMinMax;
-        libs            ( fieldFunctionObjects );
-        fields          ( p );
+        libs            (fieldFunctionObjects);
+        fields          (p);
         writeControl    timeStep;
         writeInterval   10;
     }
 }
-
-
-// ************************************************************************* //

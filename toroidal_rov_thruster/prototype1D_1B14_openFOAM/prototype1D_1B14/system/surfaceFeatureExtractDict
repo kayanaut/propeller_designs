@@ -1,4 +1,0 @@
-FoamFile { format ascii; class dictionary; object surfaceFeatureExtractDict; }
-rotor_1B14.stl { extractionMethod extractFromSurface; extractFromSurfaceCoeffs { includedAngle 150; } writeObj yes; }
-duct_1B14.stl { extractionMethod extractFromSurface; extractFromSurfaceCoeffs { includedAngle 150; } writeObj yes; }
-

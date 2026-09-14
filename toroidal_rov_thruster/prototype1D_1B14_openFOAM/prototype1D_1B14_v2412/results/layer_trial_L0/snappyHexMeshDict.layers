@@ -6,54 +6,34 @@ FoamFile
     object      snappyHexMeshDict;
 }
 
-// @..._LEVEL@ values are filled in by scripts/configure_mesh.py.
+// Layer trial only: adds prism layers to the existing snapped L0 mesh.
+// Target: first cell centre near y+ = 1 for the design-A friction velocity.
 
-castellatedMesh true;
-snap            true;
-addLayers       false;      // Off for the first runs; turn on once L0 meshes cleanly.
+castellatedMesh false;
+snap            false;
+addLayers       true;
 
 geometry
 {
     rotor_1B14.stl { type triSurfaceMesh; name rotor; }
     duct_1B14.stl  { type triSurfaceMesh; name duct; }
-
-    // Volume around the rotor and the rotor-duct gap.
-    rotorRegion
-    {
-        type    searchableCylinder;
-        point1  (-0.018 0 0);
-        point2  ( 0.018 0 0);
-        radius  0.054;
-    }
 }
 
 castellatedMeshControls
 {
     maxLocalCells       4000000;
-    maxGlobalCells      8000000;    // Safety cap for a 16 GB machine
+    maxGlobalCells      8000000;
     minRefinementCells  10;
     nCellsBetweenLevels 3;
-
-    features
-    (
-        { file "rotor_1B14.eMesh"; level @ROTOR_LEVEL@; }
-        { file "duct_1B14.eMesh";  level @DUCT_LEVEL@; }
-    );
-
+    features            ();
     refinementSurfaces
     {
-        rotor { level (@ROTOR_LEVEL@ @ROTOR_LEVEL@); patchInfo { type wall; } }
-        duct  { level (@DUCT_LEVEL@ @DUCT_LEVEL@);   patchInfo { type wall; } }
+        rotor { level (5 5); patchInfo { type wall; } }
+        duct  { level (4 4); patchInfo { type wall; } }
     }
-
     resolveFeatureAngle 30;
-
-    refinementRegions
-    {
-        rotorRegion { mode inside; levels ((1e15 @REGION_LEVEL@)); }
-    }
-
-    locationInMesh (-0.15 0.10 0.10);   // Any point in the water, away from solids
+    refinementRegions   {}
+    locationInMesh      (-0.15 0.10 0.10);
     allowFreeStandingZoneFaces true;
 }
 
@@ -71,28 +51,28 @@ snapControls
 
 addLayersControls
 {
-    // y+ <= 1 target: first layer 0.02 mm, 12 layers, ratio 1.2 (see README)
     relativeSizes           false;
     layers
     {
         rotor { nSurfaceLayers 12; }
         duct  { nSurfaceLayers 12; }
     }
-    expansionRatio          1.2;
-    finalLayerThickness     0.0001486;
-    minThickness            0.000010;
-    nGrow                   1;
-    featureAngle            45;
+    firstLayerThickness     1e-05;      // 10 um: y+ ~ 1 at the cell centre for median u_tau 0.22 m/s
+    expansionRatio          1.2;        // 12 layers: 0.40 mm total, last layer 74 um
+    minThickness            1e-06;
+    nGrow                   0;
+    featureAngle            60;
     slipFeatureAngle        30;
     nRelaxIter              5;
-    nSmoothSurfaceNormals   3;
-    nSmoothNormals          5;
+    nSmoothSurfaceNormals   1;
+    nSmoothNormals          3;
     nSmoothThickness        10;
     maxFaceThicknessRatio   0.5;
     maxThicknessToMedialRatio 0.3;
     minMedialAxisAngle      90;
-    nBufferCellsNoExtrude   2;
-    nLayerIter              60;
+    nBufferCellsNoExtrude   0;
+    nLayerIter              50;
+    nRelaxedIter            20;
 }
 
 meshQualityControls

@@ -17,13 +17,13 @@ geometry
     rotor_1B14.stl { type triSurfaceMesh; name rotor; }
     duct_1B14.stl  { type triSurfaceMesh; name duct; }
 
-    // Volume around rotor and duct. Radius covers the measured 55.5 mm rotor tip.
+    // Volume around the rotor and the rotor-duct gap.
     rotorRegion
     {
         type    searchableCylinder;
-        point1  (-0.024 0 0);
-        point2  ( 0.024 0 0);
-        radius  0.058;
+        point1  (-0.018 0 0);
+        point2  ( 0.018 0 0);
+        radius  0.054;
     }
 }
 

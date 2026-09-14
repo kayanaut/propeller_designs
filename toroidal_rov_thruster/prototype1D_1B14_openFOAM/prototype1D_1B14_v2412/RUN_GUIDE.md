@@ -1,25 +1,41 @@
 # Running prototype 1B-14 on OpenFOAM v2412
 
-A working copy of `../prototype1D_1B14`, fixed so it runs on OpenFOAM v2412. The original folder is unchanged.
-Tested on this PC on 2026-09-14: the L0 mesh builds, and the solver runs on 8 cores.
+A self-contained CFD case for the 1B-14 toroidal thruster at bollard (still water, 3000 rpm). The original `../prototype1D_1B14` is left unchanged.
 
-## Warning: the geometry has a known problem
+## The geometry is regenerated, not recovered
 
-- The rotor reaches **55.5 mm** in radius, not the 50 mm in the design notes.
-- Near the outlet end of the duct, the rotor goes **0.57 mm into the duct wall** (at x = +15.9 mm).
-- `scripts/validate_geometry.py` rejects the rotor for this reason, so the scripts skip that check.
+The recovered `prototype1B_rotor.stl` was not a valid solid, so it cannot give meaningful results:
+- its loop blades folded into themselves at the tip;
+- the roots twisted and floated off the hub;
+- every surface pointed inward;
+- it measured 111 mm across.
 
-Use the results to learn the workflow and get rough numbers. Don't treat thrust or torque as design data until the rotor STL is fixed.
+`scripts/make_geometry.py` builds a new rotor from the same design parameters (`prototype1B_design.json`). This is a new parametric design that follows those parameters, not the recovered shape. [geometry/GEOMETRY_REPORT.md](geometry/GEOMETRY_REPORT.md) lists every parameter, every assumption, and the checks it passed.
+
+| Design | Loops | Status |
+|---|---|---|
+| A: stacked legs | Legs one behind the other along the axis; closed in the front view | Meshed and solved (L0, 5000 iterations). Archived in [results/designA_stacked_loops_L0](results/designA_stacked_loops_L0), with [CHECKS.md](results/designA_stacked_loops_L0/CHECKS.md) |
+| **B: front-opening loops** (current) | Each loop opens about 56° in the front view, with a round apex, like the reference toroidal rotor | Geometry and L0 mesh checked (Mesh OK, 2.01 M cells, shape kept within 0.06 mm); not yet solved. See [results/designB_mesh_L0.md](results/designB_mesh_L0.md) |
+
+Design B's printed part (`geometry/rotor_1B14.step`) has a ring hub with 3 spokes and a splined bore. The spline dimensions are placeholders: confirm them against your shaft before printing. The CFD STL keeps a closed hub.
+
+To see the shape, run `python3 scripts/render_geometry.py` and open `geometry/preview.png`.
+
+Near-wall resolution: neither design has prism layers yet, and on design A 61% of the rotor area sat at y+ 5–30, where wall functions are least accurate. A mesh-only layer trial on design B is recorded in [results/layer_trial_L0.md](results/layer_trial_L0.md).
+
+Force signs in the reports: axial forces keep their sign (negative = toward −x, which is thrust for a +x jet), and shaft power is −ω × rotor moment (must be positive).
 
 ## What the folders mean
 
-| Folder | Holds | Examples here |
-|---|---|---|
-| `0.orig/` | Starting values and boundary conditions (copied to `0/` before solving) | `U` velocity, `p` pressure, `k`/`omega`/`nut` turbulence |
-| `constant/` | Physics and mesh | `MRFProperties` (3000 rpm spin), `transportProperties` (seawater), `polyMesh/` (after meshing) |
-| `system/` | How to mesh and solve | `controlDict` (iterations, outputs), `fvSchemes`, `fvSolution`, meshing dictionaries |
+| Folder | Holds |
+|---|---|
+| `geometry/` | Rotor and duct STLs for CFD (metres), rotor STEP for CAD/printing (mm), section table, geometry report |
+| `0.orig/` | Starting values and boundary conditions (copied to `0/` before solving) |
+| `constant/` | Physics: `MRFProperties` (3000 rpm spin), `transportProperties` (seawater); the mesh after meshing |
+| `system/` | How to mesh and solve: `controlDict` (iterations, outputs), meshing dictionaries, `topoSetDict` (rotating zone) |
+| `scripts/` | Geometry generator, geometry checks, mesh level setup, convergence report |
 
-## Step 0: install ParaView, the results viewer (once)
+## Step 0: once per computer
 
 ```bash
 sudo apt install paraview
@@ -27,89 +43,98 @@ sudo apt install paraview
 
 ## Step 1: open an OpenFOAM terminal
 
-Run this in every new terminal before any OpenFOAM command:
+Do this in every new terminal:
 
 ```bash
 openfoam2412
-cd ~/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov/prototype1D_1B14_openFOAM/prototype1D_1B14_v2412
+cd ~/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype1D_1B14_openFOAM/prototype1D_1B14_v2412
 ```
 
-Optional 2-minute warm-up to confirm the install works:
+## Step 2: geometry (only when design parameters change)
+
+The finished geometry is already in `geometry/`. To rebuild it (about 15 s):
 
 ```bash
-cp -r $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily ~/pitzDaily && cd ~/pitzDaily
-blockMesh && simpleFoam && touch p.foam && paraview p.foam
+python3 scripts/make_geometry.py
 ```
 
-## Step 2: build the mesh (about 16 minutes, 3.3 GB RAM)
+## Step 3: mesh (about 12 minutes, 3 GB RAM)
+
+Tested result: 1.89 M cells, rotating zone 1.08 M cells, max skewness 3.42, max non-orthogonality 66.7, `Mesh OK.`
 
 ```bash
 ./Allclean
 ./Allmesh L0
 ```
 
-`Allmesh` runs these steps. Each step writes its output to a `log.<name>` file.
+`Allmesh` stops at the first failed check and prints what failed. Each step writes a `log.<name>` file.
 
-1. `surfaceTransformPoints`: converts the STLs from mm to m and turns the axis from z to x.
-2. `surfaceCheck`: checks the STLs are closed surfaces.
-3. `blockMesh`: the background box, 8 mm cells.
-4. `surfaceFeatureExtract`: finds sharp edges.
-5. `snappyHexMesh`: cuts out the rotor and duct and refines the cells around them. Watch it with `tail -f log.snappyHexMesh` in a second terminal.
-6. `topoSet`: marks the cells that spin with the rotor (`mrfZone`).
-7. `checkMesh`: reports mesh quality.
+| Step | Checks |
+|---|---|
+| `validate_geometry.py` | Units, closed outward surfaces, rotor inside 100 mm, at least 2 mm to the duct, rotating zone clear of rotor and duct |
+| `surfaceCheck` | STLs closed, one piece each, not self-intersecting |
+| `blockMesh`, `snappyHexMesh` | Background box, then cut out rotor and duct and refine around them |
+| `topoSet` | Rotating zone (`mrfZone`) is not empty |
+| `checkMesh` | Must print `Mesh OK.` |
 
-Expected in `log.checkMesh`: about 2.2 M cells, and `Failed 1 mesh checks` for 21 skewed faces. That is acceptable for L0.
+Look at the mesh with `paraview case.foam`. Use Surface With Edges and a Slice through the axis.
 
-Look at the mesh in ParaView: `paraview case.foam`, then Apply. Use a Slice filter with normal (0 0 1) to see the cells around the blades.
+## Step 4: check the flow direction (about 15 minutes)
 
-## Step 3: solve (about 2 hours on 8 cores)
+Which way the water goes depends on the rotation direction, so check it before the long run:
 
-Wait until `./Allmesh` has finished; `log.checkMesh` appears at the very end. Then:
+```bash
+./Allsolve 300
+python3 scripts/convergence_report.py --window 100
+```
+
+Read the `Flow direction` line:
+
+- "bellmouth intake ... as designed": go to step 5.
+- "REVERSED": in `constant/MRFProperties`, change `omega 314.159265359` to `omega -314.159265359`, then repeat step 4.
+
+## Step 5: baseline run (about 3 hours on 6 cores)
+
+This laptop solves fastest on its 6 performance cores. More ranks land on the slower efficiency cores and hold every other rank back. Measured: 6 ranks 2.9 s per iteration, 12 ranks 5.1 s.
 
 ```bash
 ./Allsolve
 ```
 
-To use more cores, set `numberOfSubdomains` in `system/decomposeParDict` first, for example 16.
-
-While it runs, in another terminal (after running `openfoam2412` and `cd` into the case):
+`Allsolve` always starts from iteration 0 and runs 5000 iterations. While it runs, use another terminal (after `openfoam2412` and `cd`):
 
 ```bash
-tail -f log.simpleFoam                               # live solver output
-tail postProcessing/rotorForces/0/force.dat          # rotor force, newtons
+tail -f log.simpleFoam                              # live solver output
+python3 scripts/convergence_report.py               # converged yet?
 ```
 
-To stop early, press Ctrl+C, then run `reconstructPar -latestTime`. Rerunning `./Allsolve` does not continue from where it stopped: it restores `0/` and skips steps that already have a log. To continue, run `mpirun -np 8 simpleFoam -parallel > log.simpleFoam.2`.
+If the report says NOT CONVERGED at 5000 iterations, raise `endTime` in `system/controlDict` while the solver is still running; it picks up the change. Starting `./Allsolve` again would begin from 0.
 
-## Step 4: read the results
+## Step 6: record the baseline
 
-All forces are what the water applies to each part, in newtons, at `CofR (0 0 0)`.
+```bash
+python3 scripts/convergence_report.py --write BASELINE.md
+```
 
-| Quantity | Where | How |
-|---|---|---|
-| Thrust | `rotorForces/0/force.dat` + `ductForces/0/force.dat` | Add the two `total_x` columns. The sign gives the direction. |
-| Torque Q | `rotorForces/0/moment.dat` | `total_x`, in N·m |
-| Shaft power | | P = 314.16 × Q (W). The motor budget is 300 W electrical. |
-| Minimum pressure | `pressureRange/0/fieldMinMax.dat` | min × 1025 = Pa relative to ambient |
-| y+ | `yPlus/0/yPlus.dat` | Much greater than 1 at L0 is expected; wall functions handle it. |
-| Convergence | `residuals/0/solverInfo.dat` | Residuals flat, and thrust and torque constant over the last few hundred iterations |
+The report gives one of three verdicts:
 
-In ParaView, open `case.foam`, select the last time step, and colour by `p` or `U`. Slice along the axis to see the jet.
-
-## What was changed from the original case, and why
-
-| Change | Why |
+| Verdict | Meaning |
 |---|---|
-| `farfield` changed from a `symmetryPlane` to open boundaries | v2412 stops with "not planar" when four faces facing different ways are one symmetry patch. Walls around the domain also block the water the thruster draws in. |
-| `inlet` changed from fixed zero velocity to total pressure | A fixed zero velocity acts like a wall. Bollard means still water, not a sealed inlet. |
-| Refinement of the whole rotor cylinder: level 5 → 3 | Level 5 everywhere would be about 27 M cells at L0, far beyond 16 GB of RAM. |
-| `mrfZone` radius 51.5 → 57 mm | Blade tips reach 55.5 mm. Parts outside the zone would not spin. |
-| `potentialFoam` and `setFields` removed | They did nothing for a start from still water, and `potentialFoam` needed a missing entry. |
-| `residuals` changed to `solverInfo`; `features` changed to `{ }` blocks | v2412 syntax |
-| `addLayers false` | Twelve 0.02 mm layers rarely build on the first attempt. Turn layers on after L0 works. |
-| `maxGlobalCells` 24 M → 8 M | Stops the mesher before it runs out of memory. |
-| Logs, parallel solve, and `Allmesh`/`Allsolve` split | So you can inspect the mesh before solving. |
+| CONVERGED | Thrust, torque and flow averaged over the last 500 iterations differ by < 0.5% from the 500 before and swing < 1% within them; every residual has dropped 1000× or stopped changing. |
+| STATISTICALLY STEADY | The answer keeps oscillating, but about a fixed average: over the last 3000 iterations each average is known to within ±2% (95%), and every residual has stopped changing. Use the averages with their ± values. |
+| NOT CONVERGED | Neither. Look at which line fails before trusting any number. |
 
-## Before L1 and L2
+Reported values are averages over the last 3000 iterations, with a 95% ± range. The first baseline (5000 iterations, 4 h 19 min on 6 cores) is recorded in [BASELINE.md](BASELINE.md).
 
-With the README's surface levels, L1 would be roughly 10 M cells and L2 100 M or more. That is too big for this PC. Resize the levels using the L0 cell count before trying them.
+## Reading the numbers
+
+| Quantity | Meaning |
+|---|---|
+| Thrust | Force pushing the thruster, opposite the jet (+x jet gives thrust toward −x) |
+| Torque | Twisting load on the shaft (N·m) |
+| Shaft power | ω × torque, in W. The motor budget is 300 W electrical. |
+| T/P | Thrust per watt: the main figure of merit for bollard thrust |
+| Min wall pressure and cavitation margin | Lowest pressure on the rotor and on the duct, and how far it stays above the pressure where seawater boils (cavitates) at 1 m depth. "Min pressure anywhere" can be an artefact at the edge of the rotating zone, so use the wall values. |
+| y+ | Wall cell size in viscous units. Large values are expected at L0; wall functions handle them. |
+
+In ParaView, open `case.foam`, select the last time, colour by `p` or `U`, and slice along the axis to see the jet.
