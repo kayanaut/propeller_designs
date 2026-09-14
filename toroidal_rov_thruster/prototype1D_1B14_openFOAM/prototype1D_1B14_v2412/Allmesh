@@ -1,0 +1,33 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1                              # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # OpenFOAM run functions
+#------------------------------------------------------------------------------
+# Build the mesh.   Usage: ./Allmesh [L0|L1|L2]
+# Run inside an OpenFOAM shell (start one by typing: openfoam2412).
+# Run ./Allclean first when re-meshing: steps with an existing log are skipped.
+
+level="${1:-L0}"
+geom=../../toroidal_rov_prototype1B
+
+python3 scripts/configure_mesh.py "$level" || exit 1
+
+# The prototype 1B STLs are in millimetres with the rotation axis along z.
+# This case needs metres with the axis along +x.
+for part in rotor duct
+do
+    runApplication -s "$part" surfaceTransformPoints \
+        -read-scale 0.001 -rotate '((0 0 1) (1 0 0))' \
+        "$geom/prototype1B_$part.stl" "constant/triSurface/${part}_1B14.stl" \
+        || exit 1
+    runApplication -s "$part" surfaceCheck "constant/triSurface/${part}_1B14.stl"
+done
+
+runApplication blockMesh || exit 1
+runApplication surfaceFeatureExtract || exit 1
+runApplication snappyHexMesh -overwrite || exit 1
+runApplication topoSet || exit 1
+runApplication checkMesh
+
+touch case.foam                                     # ParaView opens this file
+
+#------------------------------------------------------------------------------

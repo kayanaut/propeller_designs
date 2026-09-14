@@ -1,0 +1,33 @@
+FoamFile { format ascii; class dictionary; object snappyHexMeshDict; }
+castellatedMesh true; snap true; addLayers true;
+geometry
+{
+ rotor_1B14.stl { type triSurfaceMesh; name rotor; }
+ duct_1B14.stl { type triSurfaceMesh; name duct; }
+ gapZone { type searchableCylinder; point1 (-0.024 0 0); point2 (0.024 0 0); radius 0.053; }
+}
+castellatedMeshControls
+{
+ maxLocalCells 4000000; maxGlobalCells 24000000; minRefinementCells 10; nCellsBetweenLevels 3;
+ features ((file "rotor_1B14.eMesh" level 6) (file "duct_1B14.eMesh" level 5));
+ refinementSurfaces
+ {
+  rotor { level (6 6); patchInfo { type wall; } }
+  duct { level (5 5); patchInfo { type wall; } }
+ }
+ resolveFeatureAngle 30;
+ refinementRegions { gapZone { mode inside; levels ((1e15 6)); } }
+ locationInMesh (-0.15 0.10 0.10); allowFreeStandingZoneFaces true;
+}
+snapControls { nSmoothPatch 5; tolerance 2.0; nSolveIter 100; nRelaxIter 8; nFeatureSnapIter 15; implicitFeatureSnap false; explicitFeatureSnap true; multiRegionFeatureSnap false; }
+addLayersControls
+{
+ relativeSizes false;
+ layers { rotor { nSurfaceLayers 12; } duct { nSurfaceLayers 12; } }
+ expansionRatio 1.2; finalLayerThickness 0.0001486; minThickness 0.000010; nGrow 1;
+ featureAngle 45; slipFeatureAngle 30; nRelaxIter 5; nSmoothSurfaceNormals 3; nSmoothNormals 5; nSmoothThickness 10;
+ maxFaceThicknessRatio 0.5; maxThicknessToMedialRatio 0.3; minMedialAxisAngle 90; nBufferCellsNoExtrude 2; nLayerIter 60;
+}
+meshQualityControls { maxNonOrtho 70; maxBoundarySkewness 20; maxInternalSkewness 4; maxConcave 80; minVol 1e-18; minTetQuality 1e-20; minArea -1; minTwist 0.02; minDeterminant 0.001; minFaceWeight 0.02; minVolRatio 0.01; minTriangleTwist -1; nSmoothScale 4; errorReduction 0.75; }
+writeFlags (scalarLevels layerSets layerFields); mergeTolerance 1e-6;
+

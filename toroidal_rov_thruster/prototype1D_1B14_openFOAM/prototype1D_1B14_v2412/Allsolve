@@ -1,0 +1,22 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1                              # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # OpenFOAM run functions
+#------------------------------------------------------------------------------
+# Run the flow solver on the mesh made by ./Allmesh.
+# Number of cores: numberOfSubdomains in system/decomposeParDict.
+
+# checkMesh is the last step of ./Allmesh, so its log means meshing finished.
+[ -f log.checkMesh ] || { echo "Mesh not finished: wait for ./Allmesh"; exit 1; }
+
+# Start fresh: remove any earlier (or failed) solver run.
+rm -rf processor* postProcessing log.decomposePar log.simpleFoam log.reconstructPar
+foamListTimes -rm > /dev/null 2>&1
+
+restore0Dir                                         # Copy 0.orig to 0
+runApplication decomposePar || exit 1
+runParallel $(getApplication)
+runApplication reconstructPar -latestTime
+
+touch case.foam
+
+#------------------------------------------------------------------------------

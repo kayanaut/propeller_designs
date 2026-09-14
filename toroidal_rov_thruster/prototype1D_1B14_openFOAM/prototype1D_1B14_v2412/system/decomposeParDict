@@ -1,0 +1,12 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      decomposeParDict;
+}
+
+// How many CPU cores the solver uses. This PC has 20; 8 leaves room for other work.
+numberOfSubdomains 8;
+
+method          scotch;

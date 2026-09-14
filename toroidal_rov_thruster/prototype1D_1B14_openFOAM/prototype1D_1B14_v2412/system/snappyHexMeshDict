@@ -1,0 +1,121 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+
+// @..._LEVEL@ values are filled in by scripts/configure_mesh.py.
+
+castellatedMesh true;
+snap            true;
+addLayers       false;      // Off for the first runs; turn on once L0 meshes cleanly.
+
+geometry
+{
+    rotor_1B14.stl { type triSurfaceMesh; name rotor; }
+    duct_1B14.stl  { type triSurfaceMesh; name duct; }
+
+    // Volume around rotor and duct. Radius covers the measured 55.5 mm rotor tip.
+    rotorRegion
+    {
+        type    searchableCylinder;
+        point1  (-0.024 0 0);
+        point2  ( 0.024 0 0);
+        radius  0.058;
+    }
+}
+
+castellatedMeshControls
+{
+    maxLocalCells       4000000;
+    maxGlobalCells      8000000;    // Safety cap for a 16 GB machine
+    minRefinementCells  10;
+    nCellsBetweenLevels 3;
+
+    features
+    (
+        { file "rotor_1B14.eMesh"; level 5; }
+        { file "duct_1B14.eMesh";  level 4; }
+    );
+
+    refinementSurfaces
+    {
+        rotor { level (5 5); patchInfo { type wall; } }
+        duct  { level (4 4);   patchInfo { type wall; } }
+    }
+
+    resolveFeatureAngle 30;
+
+    refinementRegions
+    {
+        rotorRegion { mode inside; levels ((1e15 3)); }
+    }
+
+    locationInMesh (-0.15 0.10 0.10);   // Any point in the water, away from solids
+    allowFreeStandingZoneFaces true;
+}
+
+snapControls
+{
+    nSmoothPatch            5;
+    tolerance               2.0;
+    nSolveIter              100;
+    nRelaxIter              8;
+    nFeatureSnapIter        15;
+    implicitFeatureSnap     false;
+    explicitFeatureSnap     true;
+    multiRegionFeatureSnap  false;
+}
+
+addLayersControls
+{
+    // y+ <= 1 target: first layer 0.02 mm, 12 layers, ratio 1.2 (see README)
+    relativeSizes           false;
+    layers
+    {
+        rotor { nSurfaceLayers 12; }
+        duct  { nSurfaceLayers 12; }
+    }
+    expansionRatio          1.2;
+    finalLayerThickness     0.0001486;
+    minThickness            0.000010;
+    nGrow                   1;
+    featureAngle            45;
+    slipFeatureAngle        30;
+    nRelaxIter              5;
+    nSmoothSurfaceNormals   3;
+    nSmoothNormals          5;
+    nSmoothThickness        10;
+    maxFaceThicknessRatio   0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedialAxisAngle      90;
+    nBufferCellsNoExtrude   2;
+    nLayerIter              60;
+}
+
+meshQualityControls
+{
+    maxNonOrtho             70;
+    maxBoundarySkewness     20;
+    maxInternalSkewness     4;
+    maxConcave              80;
+    minVol                  1e-18;
+    minTetQuality           1e-20;
+    minArea                 -1;
+    minTwist                0.02;
+    minDeterminant          0.001;
+    minFaceWeight           0.02;
+    minVolRatio             0.01;
+    minTriangleTwist        -1;
+    nSmoothScale            4;
+    errorReduction          0.75;
+
+    relaxed
+    {
+        maxNonOrtho         75;
+    }
+}
+
+mergeTolerance 1e-6;

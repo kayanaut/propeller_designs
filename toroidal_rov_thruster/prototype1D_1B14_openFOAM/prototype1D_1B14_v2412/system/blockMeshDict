@@ -1,0 +1,38 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+
+// Background mesh: one box, 0.60 m long in x and 0.40 m square.
+// 75 50 50 are filled in by scripts/configure_mesh.py.
+
+convertToMeters 1;
+
+vertices
+(
+    (-0.2 -0.2 -0.2) (0.4 -0.2 -0.2) (0.4 0.2 -0.2) (-0.2 0.2 -0.2)
+    (-0.2 -0.2  0.2) (0.4 -0.2  0.2) (0.4 0.2  0.2) (-0.2 0.2  0.2)
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (75 50 50) simpleGrading (1 1 1)
+);
+
+edges ();
+
+boundary
+(
+    inlet    { type patch; faces ((0 4 7 3)); }
+    outlet   { type patch; faces ((1 2 6 5)); }
+
+    // Open sides, so the thruster can draw water in from all around.
+    // The four faces point in different directions, so v2412 refuses them
+    // as a single symmetryPlane patch.
+    farfield { type patch; faces ((0 1 5 4) (3 7 6 2) (0 3 2 1) (4 5 6 7)); }
+);
+
+mergePatchPairs ();

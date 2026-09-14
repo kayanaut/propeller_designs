@@ -1,0 +1,49 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      k;
+}
+
+// Turbulent kinetic energy, m2/s2.
+
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform 1e-8;
+
+boundaryField
+{
+    inlet
+    {
+        type            inletOutlet;
+        inletValue      uniform 1e-8;
+        value           uniform 1e-8;
+    }
+
+    farfield
+    {
+        type            inletOutlet;
+        inletValue      uniform 1e-8;
+        value           uniform 1e-8;
+    }
+
+    outlet
+    {
+        type            inletOutlet;
+        inletValue      uniform 1e-8;
+        value           uniform 1e-8;
+    }
+
+    rotor
+    {
+        type            kqRWallFunction;
+        value           uniform 1e-8;
+    }
+
+    duct
+    {
+        type            kqRWallFunction;
+        value           uniform 1e-8;
+    }
+}

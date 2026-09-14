@@ -1,0 +1,11 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1                              # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/CleanFunctions      # OpenFOAM clean functions
+#------------------------------------------------------------------------------
+# Delete mesh, results and logs. The set-up files are kept.
+
+cleanCase0
+rm -rf constant/extendedFeatureEdgeMesh
+rm -f constant/triSurface/*_1B14* case.foam log.*
+
+#------------------------------------------------------------------------------

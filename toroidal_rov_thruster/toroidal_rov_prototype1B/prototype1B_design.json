@@ -1,0 +1,56 @@
+{
+  "design": "Prototype 1B",
+  "status": "pre-CFD candidate; CFD solver not executed in this package",
+  "motor": {
+    "voltage_V": 24.0,
+    "electrical_power_W": 300.0,
+    "rpm": 3000.0
+  },
+  "target": {
+    "static_thrust_N": 35.0,
+    "CT_target": 0.13658536585365852
+  },
+  "fluid": {
+    "rho_kg_m3": 1025.0,
+    "mu_Pa_s": 0.00108
+  },
+  "geometry": {
+    "blades": 3,
+    "hub_d": 28.0,
+    "hub_len": 30.0,
+    "shaft_bore": 8.0,
+    "insert_od": 12.0,
+    "insert_len": 30.0,
+    "foil_t": 0.16,
+    "r_root": 15.2,
+    "r_outer": 47.8,
+    "outer_z": 11.5,
+    "skew_deg": 7.0,
+    "helical_deg": 11.0,
+    "chord_min": 12.5,
+    "chord_max": 19.0,
+    "closure_bias": 0.18,
+    "root_load": 0.8,
+    "duct_len": 38.0,
+    "duct_wall": 5.0,
+    "throat_id": 104.0,
+    "inlet_id": 114.0,
+    "outlet_id": 111.0,
+    "bell_len": 12.0,
+    "rotor_duct_gap": 2.0,
+    "duct_hub_gap": 1.0
+  },
+  "derived": {
+    "omega_rad_s": 314.1592653589793,
+    "equivalent_torque_Nm": 0.954929658551372
+  },
+  "CFD_plan": {
+    "model": "incompressible RANS k-omega SST",
+    "steady": "MRF",
+    "transient": "sliding mesh",
+    "y_plus_target": 1,
+    "domain_upstream_D": 5,
+    "domain_downstream_D": 10,
+    "domain_radius_D": 5
+  }
+}

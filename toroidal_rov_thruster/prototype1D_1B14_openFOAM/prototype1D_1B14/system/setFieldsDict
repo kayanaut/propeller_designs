@@ -1,0 +1,4 @@
+FoamFile { format ascii; class dictionary; object setFieldsDict; }
+defaultFieldValues (volScalarFieldValue p 0 volVectorFieldValue U (0 0 0) volScalarFieldValue k 1e-8 volScalarFieldValue omega 1);
+regions ();
+

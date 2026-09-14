@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+cd "${0%/*}" || exit 1
+LEVEL="${1:-L0}"
+case "$LEVEL" in L0|L1|L2) ;; *) echo "Usage: ./Allrun [L0|L1|L2]"; exit 2;; esac
+python3 scripts/validate_geometry.py
+python3 scripts/configure_mesh.py "$LEVEL"
+surfaceCheck constant/triSurface/rotor_1B14.stl
+surfaceCheck constant/triSurface/duct_1B14.stl
+blockMesh
+surfaceFeatureExtract
+snappyHexMesh -overwrite
+topoSet
+checkMesh -allGeometry -allTopology
+setFields
+potentialFoam -writePhi
+simpleFoam
+

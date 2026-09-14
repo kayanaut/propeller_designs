@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+cd "${0%/*}" || exit 1
+rm -rf 0 constant/polyMesh constant/extendedFeatureEdgeMesh postProcessing processor* log.*
+cp -r 0.orig 0
+

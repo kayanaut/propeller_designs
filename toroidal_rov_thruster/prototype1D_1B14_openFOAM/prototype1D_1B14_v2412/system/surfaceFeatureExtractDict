@@ -1,0 +1,23 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      surfaceFeatureExtractDict;
+}
+
+// Sharp edges (blade trailing edges, duct lips) that snappyHexMesh should keep.
+
+rotor_1B14.stl
+{
+    extractionMethod    extractFromSurface;
+    includedAngle       150;
+    writeObj            yes;
+}
+
+duct_1B14.stl
+{
+    extractionMethod    extractFromSurface;
+    includedAngle       150;
+    writeObj            yes;
+}
