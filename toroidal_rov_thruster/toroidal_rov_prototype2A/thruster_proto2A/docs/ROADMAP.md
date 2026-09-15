@@ -11,7 +11,9 @@ Where the toroidal ROV thruster stands, and what comes next. Last updated 2026-0
 | 2 | Vendor M200 STEP aligned and cross-checked against the parameters (0.1 mm / 0.5°); zero overlap with every printed part | Done |
 | 2 | CFD case `prototype2A_M2_openFOAM`: geometry export, 5 D / 10 D / 5 D domain, wake refinement, forward rotation; L0 mesh | Done: Mesh OK, 2.48 M cells, max non-orthogonality 69.9, 19 min, 3.6 GB (`results/P2A_M2_mesh_L0.md` in the case) |
 | 3 | Short run, 300 iterations, to confirm the thrust sign and flow direction | Done: thrust toward −x, positive shaft power, jet +x. Unconverged values about 31 N, 0.5 N·m, 155 W, still rising (`results/P2A_M2_check_300.md` in the case) |
-| 3 | Forward L0 solve, 5000 iterations (about 6.2 h), then reverse; compare with 1B-14 design A (27 N at P/D 0.58); check torque against the M200 and the rotor's minimum pressure (cavitation) | Next; needs your go-ahead |
+| 3 | Forward L0 solve (stopped at iteration 4467 by choice) | Done: 29.1 N (rotor 17.9, duct and support 11.3), 0.413 N·m, 130 W, 0.225 N/W, 18.1 L/s. Torque still drifting about 2%. Rotor minimum pressure −180 kPa, so cavitation shallower than about 8 m (`results/P2A_M2_L0_forward/` in the case) |
+| 3 | Reverse L0 solve (`omega +314.159`, about 6 h); a run near 3300 rpm to check the 35 N target | Needs your go-ahead |
+| 3 | Reduce the suction peak at the loop apex (lighter apex loading, higher `closure_t_c` or chord); recheck the minimum pressure | Next design step |
 | 4 | Choose the resin printer and resin; check the 134 mm parts fit the build plate | Waiting on printer and resin |
 | 4 | Print the hub fit coupon and test it on a real M200; set the allowances | Waiting on printer and resin |
 | 4 | Print the rotor, duct and support; dry fit; hand-turn check | Later |
