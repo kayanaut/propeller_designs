@@ -1,0 +1,201 @@
+{
+  "vendor_step": "hardware/vendor/M200_STANDARD_BR-101376_PUBLIC.STEP",
+  "tolerance_mm": 0.1,
+  "tolerance_deg": 0.5,
+  "status": "PASS",
+  "failures": [],
+  "checks": {
+    "can_diameter": {
+      "step": 36.0,
+      "parameter": 36.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "can_length": {
+      "step": 29.0,
+      "parameter": 29.0,
+      "difference": -0.0,
+      "pass": true
+    },
+    "collar_diameter": {
+      "step": 11.0,
+      "parameter": 11.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "collar_height": {
+      "step": 6.0,
+      "parameter": 6.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "shaft_diameter": {
+      "step": 5.0,
+      "parameter": 5.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "shaft_length": {
+      "step": 12.0,
+      "parameter": 12.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "flat_across": {
+      "step": 4.0,
+      "parameter": 4.0,
+      "difference": -0.0,
+      "pass": true
+    },
+    "flat_length": {
+      "step": 6.0,
+      "parameter": 6.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "can_face_screw_pcd": {
+      "step": 19.016,
+      "parameter": 19.05,
+      "difference": -0.034,
+      "pass": true
+    },
+    "vent_pcd": {
+      "step": 21.0,
+      "parameter": 21.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "can_face_plate_thickness": {
+      "step": 4.0,
+      "parameter": 4.0,
+      "difference": -0.0,
+      "pass": true
+    },
+    "base_diameter": {
+      "step": 40.0,
+      "parameter": 40.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "base_length": {
+      "step": 25.5,
+      "parameter": 25.5,
+      "difference": 0.0,
+      "pass": true
+    },
+    "can_to_base_gap": {
+      "step": 1.1,
+      "parameter": 1.1,
+      "difference": -0.0,
+      "pass": true
+    },
+    "base_screw_pcd": {
+      "step": 30.0,
+      "parameter": 29.98,
+      "difference": 0.02,
+      "pass": true
+    },
+    "base_thread_depth": {
+      "step": 6.0,
+      "parameter": 6.0,
+      "difference": 0.0,
+      "pass": true
+    },
+    "cable_diameter": {
+      "step": 6.35,
+      "parameter": 6.35,
+      "difference": 0.0,
+      "pass": true
+    },
+    "cable_height_above_base_rear": {
+      "step": 6.825,
+      "parameter": 6.82,
+      "difference": 0.005,
+      "pass": true
+    },
+    "rotor_face_z": {
+      "step": 16.0,
+      "parameter": 16.0,
+      "pass": true
+    },
+    "can_face_screw_count": {
+      "step": 2,
+      "parameter": 2,
+      "pass": true
+    },
+    "vent_count": {
+      "step": 2,
+      "parameter": 2,
+      "pass": true
+    },
+    "base_screw_count": {
+      "step": 4,
+      "parameter": 4,
+      "pass": true
+    },
+    "flat_azimuth_from_cable_deg": {
+      "step": [
+        360.0
+      ],
+      "parameter": [
+        0.0
+      ],
+      "max_difference_deg": 0.0,
+      "pass": true
+    },
+    "can_face_screw_azimuths_from_cable_deg": {
+      "step": [
+        179.64,
+        359.64
+      ],
+      "parameter": [
+        0.0,
+        180.0
+      ],
+      "max_difference_deg": 0.36,
+      "pass": true
+    },
+    "vent_azimuths_from_cable_deg": {
+      "step": [
+        45.0,
+        225.0
+      ],
+      "parameter": [
+        45.0,
+        225.0
+      ],
+      "max_difference_deg": 0.0,
+      "pass": true
+    },
+    "base_screw_azimuths_from_cable_deg": {
+      "step": [
+        45.0,
+        135.0,
+        225.0,
+        315.0
+      ],
+      "parameter": [
+        45.0,
+        135.0,
+        225.0,
+        315.0
+      ],
+      "max_difference_deg": 0.0,
+      "pass": true
+    },
+    "cable_azimuth_from_cable_deg": {
+      "step": [
+        360.0
+      ],
+      "parameter": [
+        0.0
+      ],
+      "max_difference_deg": 0.0,
+      "pass": true
+    },
+    "nothing_behind_base_rear": {
+      "step": 0.0,
+      "pass": true
+    }
+  }
+}

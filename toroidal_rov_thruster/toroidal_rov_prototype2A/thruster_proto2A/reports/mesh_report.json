@@ -1,0 +1,70 @@
+{
+  "rotor": {
+    "triangles": 87576,
+    "vertices": 43774,
+    "connected_components": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "inconsistent_edge_directions": 0,
+    "degenerate_triangles": 0,
+    "signed_volume_mm3": 27383.919921875,
+    "watertight": true,
+    "bbox_mm": [
+      81.37008666992188,
+      91.38170623779297,
+      30.0
+    ],
+    "self_intersecting_triangle_pairs": 0
+  },
+  "duct_full": {
+    "triangles": 34704,
+    "vertices": 17346,
+    "connected_components": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "inconsistent_edge_directions": 0,
+    "degenerate_triangles": 0,
+    "signed_volume_mm3": 118514.5390625,
+    "watertight": true,
+    "bbox_mm": [
+      134.0,
+      133.95834350585938,
+      43.9993782043457
+    ],
+    "self_intersecting_triangle_pairs": 0
+  },
+  "motor_support": {
+    "triangles": 47620,
+    "vertices": 23776,
+    "connected_components": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "inconsistent_edge_directions": 0,
+    "degenerate_triangles": 0,
+    "signed_volume_mm3": 44820.80078125,
+    "watertight": true,
+    "bbox_mm": [
+      134.0,
+      133.95834350585938,
+      58.599609375
+    ],
+    "self_intersecting_triangle_pairs": 2
+  },
+  "hub_fit_coupon": {
+    "triangles": 9638,
+    "vertices": 4809,
+    "connected_components": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "inconsistent_edge_directions": 0,
+    "degenerate_triangles": 0,
+    "signed_volume_mm3": 36263.43359375,
+    "watertight": true,
+    "bbox_mm": [
+      82.0,
+      30.0,
+      16.0
+    ],
+    "self_intersecting_triangle_pairs": 0
+  }
+}

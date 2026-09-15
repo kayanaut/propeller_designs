@@ -1,0 +1,15 @@
+item,quantity,category,nominal_description,status
+Rotor,1,printed resin,One-piece three-loop rotor with M200 hub (collar counterbore; D-bore; 2 screw holes; 2 vent passages),Resin process approval pending
+Full duct,1,printed resin,Symmetric foil duct with faired rear flange and nut spot faces,Resin process approval pending
+Motor support,1,printed resin,Flange ring + foil struts + flooded M200 shroud + rear plate + cable boss,Resin process approval pending
+Hub fit coupon,1,printed resin,Three copies of the M200 hub interface and three M3 holes,Print before rotor
+Blue Robotics M200 motor,1,purchased,Standard version with 1 m cable; can 36 x 29 mm; base 40 x 25.5 mm; Kv 470; 390 W at 16 V,Selected; vendor CAD in hardware/vendor
+Clamp ring,1,machined or purchased metal (stainless),27 OD x 6 ID x 1.5 with 2x 3.3 holes on 19.05 PCD and 2x 4.5 vent holes on 21 PCD,Make to hardware/REFERENCE_clamp_ring.step
+Rotor screws,2,purchased metal,M3 x 25 socket head cap screw (stainless),4 mm engagement into M200 rotor face (5 mm maximum); no threadlocker
+Motor base screws,4,purchased metal,M3 x 8 socket head cap screw (stainless),5 mm engagement into M200 base inserts (6 mm maximum)
+Duct-support bolts,3,purchased metal,M3 x 25 socket head cap screw,Check grip on the printed parts
+Duct-support nuts,3,purchased metal,M3 nut (nylon-insert locking type recommended),Locking method pending
+Duct-support washers,6,purchased metal,M3 washers,Confirm bearing area on resin
+Reversible brushless ESC,1,purchased,Bidirectional; rated for 24 A at 16 V or more,Not selected
+Battery,1,purchased,M200 runs on 7-20 V; 16 V (4S) nominal,Voltage not selected
+Cable penetrator,1,purchased,M10-6.5mm-LC (Blue Robotics' penetrator for the M200 cable) if the cable enters an enclosure,Routing not designed

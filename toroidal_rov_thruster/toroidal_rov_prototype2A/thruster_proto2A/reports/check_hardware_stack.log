@@ -1,0 +1,128 @@
+{
+  "scope": "Nominal reference stack for the Blue Robotics M200 standard (BR-101376); contacts allowed, threads omitted",
+  "grip_mm": {
+    "hub_screw": 21.0,
+    "duct_bolt": 20.0
+  },
+  "checks": {
+    "hub screw engagement in M200 rotor face (mm)": {
+      "value": 4.0,
+      "min": 3.0,
+      "max": 4.5,
+      "pass": true
+    },
+    "screw head recessed below hub front face (mm)": {
+      "value": 6.0,
+      "min": 0.5,
+      "max": null,
+      "pass": true
+    },
+    "shaft tip ahead of clamp floor (mm)": {
+      "value": 1.5,
+      "min": 0.5,
+      "max": null,
+      "pass": true
+    },
+    "collar counterbore deeper than collar, hub seats on rotor face (mm)": {
+      "value": 0.3,
+      "min": 0.1,
+      "max": null,
+      "pass": true
+    },
+    "collar counterbore diametral clearance (mm)": {
+      "value": 0.2,
+      "min": 0.05,
+      "max": 0.5,
+      "pass": true
+    },
+    "pilot bore diametral allowance (mm)": {
+      "value": 0.1,
+      "min": 0.02,
+      "max": 0.3,
+      "pass": true
+    },
+    "screw head inside clamp ring outer edge (mm)": {
+      "value": 1.225,
+      "min": 0.0,
+      "max": null,
+      "pass": true
+    },
+    "hub wall around clamp recess (mm)": {
+      "value": 4.25,
+      "min": 3.0,
+      "max": null,
+      "pass": true
+    },
+    "clamp ring radial clearance in recess (mm)": {
+      "value": 0.25,
+      "min": 0.1,
+      "max": null,
+      "pass": true
+    },
+    "vent passage area / M200 vent area (ratio)": {
+      "value": 1.266,
+      "min": 1.0,
+      "max": null,
+      "pass": true
+    },
+    "wall between vent passage and screw hole (mm)": {
+      "value": 3.816,
+      "min": 1.0,
+      "max": null,
+      "pass": true
+    },
+    "base screw engagement in M200 inserts (mm)": {
+      "value": 5.0,
+      "min": 3.0,
+      "max": 5.5,
+      "pass": true
+    },
+    "cable hole radial clearance around cable (mm)": {
+      "value": 0.325,
+      "min": 0.2,
+      "max": null,
+      "pass": true
+    },
+    "duct bolt thread past nut (mm)": {
+      "value": 1.6,
+      "min": 0.5,
+      "max": null,
+      "pass": true
+    },
+    "duct nut stack inside flange spot face (mm)": {
+      "value": 0.3,
+      "min": 0.0,
+      "max": null,
+      "pass": true
+    },
+    "D-flat engagement length (mm)": {
+      "value": 5.5,
+      "min": 4.0,
+      "max": null,
+      "pass": true
+    },
+    "M200 vendor STEP agrees with parameters": {
+      "value": "PASS",
+      "pass": true
+    },
+    "hub rear face on M200 rotor face (gap mm)": {
+      "value": 0.01,
+      "min": 0.0,
+      "max": 0.02,
+      "pass": true
+    },
+    "M200 base rear face on support rear plate (gap mm)": {
+      "value": 0.009,
+      "min": 0.0,
+      "max": 0.02,
+      "pass": true
+    },
+    "clamp ring on recess floor (gap mm)": {
+      "value": 0.006,
+      "min": 0.0,
+      "max": 0.02,
+      "pass": true
+    }
+  },
+  "all_pass": true
+}

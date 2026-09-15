@@ -1,0 +1,5 @@
+cadquery==2.8.0
+numpy>=1.26,<3
+scipy>=1.11
+matplotlib>=3.8
+vtk>=9.3,<10

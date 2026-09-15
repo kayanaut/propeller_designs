@@ -1,0 +1,4 @@
+FoamFile { format ascii; class dictionary; object MRFProperties; }
+// P2A forward rotation is about -Z in the design frame, which is -x in this case, so omega < 0.
+// For reverse thrust, change omega to +314.159265359 (see RUN_GUIDE.md).
+MRF1 { cellZone mrfZone; active yes; nonRotatingPatches (stator inlet outlet farfield); origin (0 0 0); axis (1 0 0); omega -314.159265359; }

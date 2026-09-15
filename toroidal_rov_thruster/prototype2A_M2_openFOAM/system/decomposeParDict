@@ -1,0 +1,14 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      decomposeParDict;
+}
+
+// How many CPU cores the solver uses. This i7-13700H has 6 performance cores and
+// 8 efficiency cores. Measured on the L0 mesh: 6 ranks 2.93 s/iteration, 8 ranks
+// 3.50, 12 ranks 5.10. Ranks on efficiency cores slow the whole run down.
+numberOfSubdomains 6;
+
+method          scotch;

@@ -1,0 +1,27 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1                              # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # OpenFOAM run functions
+#------------------------------------------------------------------------------
+# Run the flow solver on the mesh made by ./Allmesh.   Usage: ./Allsolve [iterations]
+#   ./Allsolve 300    short run, e.g. to check the flow direction
+#   ./Allsolve        full baseline run (5000 iterations)
+# Number of cores: numberOfSubdomains in system/decomposeParDict.
+
+iterations="${1:-5000}"
+sed -i "s/^endTime .*/endTime         $iterations;       \/\/ set by .\/Allsolve/" system/controlDict
+
+# checkMesh is the last step of ./Allmesh; only a passing mesh may be solved.
+grep -qs "Mesh OK." log.checkMesh || { echo "No passing mesh: run ./Allmesh first"; exit 1; }
+
+# Start fresh: remove any earlier (or failed) solver run.
+rm -rf processor* postProcessing log.decomposePar log.simpleFoam log.reconstructPar
+foamListTimes -rm > /dev/null 2>&1
+
+restore0Dir                                         # Copy 0.orig to 0
+runApplication decomposePar || exit 1
+runParallel $(getApplication) || { echo "Solver failed: see log.simpleFoam"; exit 1; }
+runApplication reconstructPar -latestTime
+
+touch case.foam
+
+#------------------------------------------------------------------------------

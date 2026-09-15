@@ -1,0 +1,45 @@
+case: P2A-M2
+geometry_source: ../toroidal_rov_prototype2A/thruster_proto2A/source/export_cfd.py
+units: SI
+axis: [1, 0, 0]
+origin: [0, 0, 0]
+rotation:
+  rpm: 3000
+  omega_rad_s: -314.159265359   # forward: about -x (design -Z); reverse: +314.159265359
+geometry:
+  rotor: geometry/rotor_p2a.stl      # rotating body: hub + loops, closed, extended to x = 17 mm
+  stator: geometry/stator_p2a.stl    # duct + struts + ring + solid motor pod
+  rotor_radius_max_m: 0.0500
+  duct_throat_diameter_m: 0.104
+  rotor_duct_clearance_min_m: 0.0020
+  simplifications:
+    - flooded motor shroud filled into a solid pod; cooling slots, cable boss and holes left out
+    - 1 mm axial gap between the rotating body (x <= 17 mm) and the pod (x >= 18 mm)
+mrf_zone:
+  radius_m: 0.051
+  x_min_m: -0.0150
+  x_max_m: 0.0175
+  margin_min_m: 0.0005
+domain_bounds_m:
+  x: [-0.5, 1.0]
+  y: [-0.5, 0.5]
+  z: [-0.5, 0.5]
+mesh_levels:
+  L0: {base_cell_m: 0.016, rotor_level: 6, stator_level: 5, rotor_region_level: 4, wake_region_level: 2}
+  L1: {base_cell_m: 0.012, rotor_level: 6, stator_level: 5, rotor_region_level: 4, wake_region_level: 2}
+  L2: {base_cell_m: 0.008, rotor_level: 6, stator_level: 5, rotor_region_level: 4, wake_region_level: 2}
+refinement_regions:
+  rotorRegion: {x_m: [-0.020, 0.022], radius_m: 0.056}
+  wakeRegion: {x_m: [-0.050, 0.200], radius_m: 0.060}
+layers: none (addLayers false)
+cell_target_L0: about 3 M; above 3.5 M shrink the domain to 3 D / 8 D / 3 D
+quality_acceptance:
+  check_mesh: "Mesh OK."
+  max_non_orthogonality: 70
+  max_internal_skewness: 4
+  max_boundary_skewness: 20
+  min_volume: 1.0e-18
+convergence_acceptance:
+  window_iterations: 500
+  mean_change_percent: 0.5
+  peak_to_peak_percent: 1.0

@@ -1,0 +1,47 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+
+// Bollard (static) thrust: the water starts at rest. Inlet, outlet and farfield
+// are open, so the thruster can pull water in and push a jet out.
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+    }
+
+    farfield
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+    }
+
+    outlet
+    {
+        type            inletOutlet;
+        inletValue      uniform (0 0 0);
+        value           uniform (0 0 0);
+    }
+
+    // MRF (constant/MRFProperties) adds the spin to rotor walls inside mrfZone.
+    rotor
+    {
+        type            noSlip;
+    }
+
+    stator
+    {
+        type            noSlip;
+    }
+}

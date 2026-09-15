@@ -1,0 +1,26 @@
+{
+  "rotor": {
+    "valid": true,
+    "solids": 1,
+    "volume_mm3": 27192.6483142662,
+    "brep_volume_difference_mm3": 1.3457247405312955e-06
+  },
+  "duct_full": {
+    "valid": true,
+    "solids": 1,
+    "volume_mm3": 118780.08898329287,
+    "brep_volume_difference_mm3": 0.0003884682519128546
+  },
+  "motor_support": {
+    "valid": true,
+    "solids": 1,
+    "volume_mm3": 44073.25097401923,
+    "brep_volume_difference_mm3": 0.19129284293740056
+  },
+  "hub_fit_coupon": {
+    "valid": true,
+    "solids": 1,
+    "volume_mm3": 36262.284228848206,
+    "brep_volume_difference_mm3": 5.820766091346741e-11
+  }
+}

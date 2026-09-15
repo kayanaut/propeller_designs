@@ -1,0 +1,135 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+
+application     simpleFoam;
+
+// Steady solver: each "time step" is one SIMPLE iteration.
+startFrom       latestTime;
+startTime       0;
+stopAt          endTime;
+endTime         300;       // set by ./Allsolve
+deltaT          1;
+
+writeControl    timeStep;
+writeInterval   500;
+purgeWrite      2;
+writeFormat     binary;
+writePrecision  8;
+runTimeModifiable true;
+
+functions
+{
+    // Force and moment on the rotor: postProcessing/rotorForces/0/
+    rotorForces
+    {
+        type            forces;
+        libs            (forces);
+        patches         (rotor);
+        rho             rhoInf;
+        rhoInf          1025;
+        CofR            (0 0 0);
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    // Force on everything that does not spin (duct, struts, motor pod):
+    // postProcessing/statorForces/0/
+    statorForces
+    {
+        type            forces;
+        libs            (forces);
+        patches         (stator);
+        rho             rhoInf;
+        rhoInf          1025;
+        CofR            (0 0 0);
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    // Volume flow through the rotor annulus just upstream of the blades, m3/s:
+    // postProcessing/ductFlow/0/. Positive means water enters through the front
+    // bellmouth (-x) and the jet leaves past the motor support (+x).
+    ductFlow
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        regionType      sampledSurface;
+        name            rotorInflowPlane;
+        sampledSurfaceDict
+        {
+            type        cuttingPlane;
+            point       (-0.013 0 0);
+            normal      (1 0 0);
+            zones       (mrfZone);
+            interpolate false;
+        }
+        operation       areaNormalIntegrate;
+        fields          (U);
+        writeFields     false;
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    // Residuals: postProcessing/residuals/0/solverInfo.dat
+    residuals
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (U p k omega);
+        writeControl    timeStep;
+        writeInterval   1;
+    }
+
+    // Wall y+ on rotor and stator: postProcessing/yPlus/0/yPlus.dat
+    yPlus
+    {
+        type            yPlus;
+        libs            (fieldFunctionObjects);
+        writeControl    writeTime;
+    }
+
+    // Lowest wall pressure on each part, for the cavitation margin:
+    // postProcessing/{rotor,stator}Pressure/0/. p is kinematic (Pa / 1025 kg/m3).
+    rotorPressure
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        regionType      patch;
+        name            rotor;
+        operation       min;
+        fields          (p);
+        writeFields     false;
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    statorPressure
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        regionType      patch;
+        name            stator;
+        operation       min;
+        fields          (p);
+        writeFields     false;
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    // Pressure range anywhere in the water: postProcessing/pressureRange/.
+    // The minimum can sit on the MRF zone boundary, so judge cavitation from
+    // the wall values above.
+    pressureRange
+    {
+        type            fieldMinMax;
+        libs            (fieldFunctionObjects);
+        fields          (p);
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+}

@@ -1,0 +1,132 @@
+{
+  "revision": "P2A-M2",
+  "motor": "Blue Robotics M200 standard (BR-101376)",
+  "blade_checks": {
+    "apex_x_mm": 48.240915574133396,
+    "envelope_mm": 49.899999998957014,
+    "bend_radius_min_mm": 4.062579020199424,
+    "z_range_mm": [
+      -11.50796479213894,
+      11.499948959202143
+    ],
+    "folded_stations": 0,
+    "min_station_advance_mm": 0.10027769769663786,
+    "root_end_r_max_mm": 15.625516258710045,
+    "root_footprint_z_mm": [
+      -11.50796479213894,
+      11.499948959202143
+    ],
+    "leg_gap_mm": 14.531559991027041,
+    "blade_gap_mm": 3.40536747813704,
+    "min_section_thickness_mm": 1.960477529274495,
+    "trailing_edge_min_mm": 0.4999999999999987,
+    "t_c_range": [
+      0.17041835279566486,
+      0.37500008662651085
+    ],
+    "chord_range_mm": [
+      9.996227106680312,
+      13.09787657632899
+    ],
+    "pitch_mm": 75.0,
+    "pitch_angle_range_deg": [
+      13.899356908384101,
+      43.340043587548074
+    ],
+    "thrust_sign_rotating_about_minus_z": [
+      -1,
+      -1
+    ],
+    "forward_rotation": "about -Z: counter-clockwise seen from the inlet (-Z); jet toward +Z",
+    "failures": []
+  },
+  "blade_volume_mm3": 2329.912338789988,
+  "support_stations_mm": {
+    "can_front": 16.0,
+    "can_rear": 45.0,
+    "lip": 18.0,
+    "base_front": 46.1,
+    "plate_front": 71.6,
+    "plate_rear": 76.6,
+    "cable": 64.78
+  },
+  "shroud_radii_mm": {
+    "bore": 20.3,
+    "outer": 22.8
+  },
+  "hub_interface_stations_mm": {
+    "face": 16.0,
+    "collar_top": 10.0,
+    "tip": -2.0,
+    "flat_start": 4.0,
+    "floor": -3.5,
+    "counterbore_bottom": 9.7,
+    "d_bore_top": 3.5
+  },
+  "duct_radii_mm": {
+    "throat": 52.0,
+    "bell_exit": 56.0,
+    "lip_radius": 2.0,
+    "lip_outer": 60.0,
+    "outer_mid": 57.5
+  },
+  "generation_seconds": 14.421737909317017,
+  "parts": {
+    "rotor": {
+      "valid_brep": true,
+      "solids": 1,
+      "volume_mm3": 27395.948077460704,
+      "bbox_mm": [
+        81.45419359954845,
+        91.47239848951628,
+        30.023373704841152
+      ],
+      "z_range_mm": [
+        -14.013600504227398,
+        16.009773200613754
+      ]
+    },
+    "duct_full": {
+      "valid_brep": true,
+      "solids": 1,
+      "volume_mm3": 118780.93910066472,
+      "bbox_mm": [
+        134.16893906525274,
+        134.12728945336215,
+        44.039473537461575
+      ],
+      "z_range_mm": [
+        -22.01864863151625,
+        22.02082490594532
+      ]
+    },
+    "motor_support": {
+      "valid_brep": true,
+      "solids": 1,
+      "volume_mm3": 44932.41326610091,
+      "bbox_mm": [
+        134.04164981189064,
+        134.00000020000004,
+        58.61716263807499
+      ],
+      "z_range_mm": [
+        17.992913580489173,
+        76.61007621856416
+      ]
+    },
+    "hub_fit_coupon": {
+      "valid_brep": true,
+      "solids": 1,
+      "volume_mm3": 36262.28422890066,
+      "bbox_mm": [
+        82.00120492521519,
+        30.001204925215195,
+        16.003107247364373
+      ],
+      "z_range_mm": [
+        -0.0013510256689812927,
+        16.00175622169539
+      ]
+    }
+  }
+}

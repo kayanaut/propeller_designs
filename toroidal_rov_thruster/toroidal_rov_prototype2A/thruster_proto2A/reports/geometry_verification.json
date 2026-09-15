@@ -1,0 +1,106 @@
+{
+  "units": "mm",
+  "scope": "Nominal CAD with the Blue Robotics M200 (vendor STEP when available); resin error budget; no deformation model",
+  "clearance": {
+    "rotor_swept_diameter_sampled_mm": 99.81822065493142,
+    "envelope_margin_mm": 0.05,
+    "envelope_bin_mm": 0.5,
+    "rotor_volume_outside_envelope_mm3": 0,
+    "duct_gap_estimate_mm": 2.0408896725342913,
+    "all_angle_rotor_duct_gap_mm": 2.03,
+    "radial_budget_mm": 0.7,
+    "all_angle_rotor_duct_gap_after_budget_mm": 1.3299999999999998,
+    "all_angle_rotor_support_gap_mm": 2.5,
+    "required_rotor_support_gap_mm": 1.5,
+    "axial_budget_mm": 0.8,
+    "all_angle_rotor_support_gap_after_budget_mm": 1.7,
+    "method": "Revolved envelope from the rotor tessellation; exact boolean containment; dilated envelope intersection with each stationary part. Gaps are lower bounds for the full revolution."
+  },
+  "checks": {
+    "blade_max_z_mm": 9.726139643261972,
+    "strut_min_z_mm": 22.200000000000003,
+    "blade_to_strut_axial_gap_mm": 12.473860356738031,
+    "blade_to_strut_gap_pass": true,
+    "rotor_support_gap_pass": true,
+    "rotor_duct_gap_pass": true,
+    "shroud_bore_radius_mm": 20.3,
+    "can_shroud_radial_clearance_mm": 2.3000000000000007,
+    "shroud_material_inside_can_clearance_mm3": 0,
+    "shroud_material_inside_base_envelope_mm3": 0,
+    "base_radial_play_max_mm": 0.4000000000000007,
+    "flange_ring_clear_of_jet": true,
+    "can_shroud_clearance_pass": true,
+    "base_slide_fit_pass": true
+  },
+  "static_pair_intersection_volume_mm3": {
+    "rotor / REFERENCE_clamp_ring": 0,
+    "rotor / REFERENCE_hub_screws": 0,
+    "REFERENCE_clamp_ring / REFERENCE_hub_screws": 0,
+    "rotor / REFERENCE_M200_rotating": 0,
+    "rotor / REFERENCE_M200_stationary": 0,
+    "duct_full / motor_support": 0,
+    "motor_support / REFERENCE_M200_stationary": 0,
+    "motor_support / REFERENCE_M200_rotating": 0,
+    "REFERENCE_hub_screws / REFERENCE_M200_stationary": 0,
+    "rotor / motor_support": 0,
+    "rotor / duct_full": 0
+  },
+  "solids": {
+    "rotor": {
+      "brep_valid": true,
+      "solid_count": 1,
+      "shell_count": 1,
+      "checker_level": 5,
+      "self_interference": {
+        "status": "completed",
+        "timeout_s": 900,
+        "errors": false,
+        "warnings": false
+      }
+    },
+    "duct_full": {
+      "brep_valid": true,
+      "solid_count": 1,
+      "shell_count": 1,
+      "checker_level": 5,
+      "self_interference": {
+        "status": "completed",
+        "timeout_s": 120,
+        "errors": false,
+        "warnings": false
+      }
+    },
+    "motor_support": {
+      "brep_valid": true,
+      "solid_count": 1,
+      "shell_count": 1,
+      "checker_level": 5,
+      "self_interference": {
+        "status": "completed",
+        "timeout_s": 120,
+        "errors": false,
+        "warnings": false
+      }
+    },
+    "hub_fit_coupon": {
+      "brep_valid": true,
+      "solid_count": 1,
+      "shell_count": 1,
+      "checker_level": 5,
+      "self_interference": {
+        "status": "completed",
+        "timeout_s": 120,
+        "errors": false,
+        "warnings": false
+      }
+    }
+  },
+  "release_gates": {
+    "printer_confirmed": false,
+    "motor_selected": true,
+    "local_thickness_field_complete": false,
+    "machine_slicing_complete": false,
+    "structural_test_complete": false,
+    "powered_test_complete": false
+  }
+}

@@ -1,0 +1,24 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+
+// Rotating (MRF) zone: every cell inside this cylinder spins at omega (constant/MRFProperties).
+// It covers the rotor body from its hub front (x = -14 mm) to the split plane (x = +17 mm)
+// with 0.5 mm to spare, stays 1.0 mm inside the duct throat (r = 52 mm), and ends 0.5 mm
+// before the stationary motor pod (x = +18 mm). scripts/validate_geometry.py checks these margins.
+actions
+(
+    {
+        name    mrfZone;
+        type    cellZoneSet;
+        action  new;
+        source  cylinderToCell;
+        p1      (-0.0150 0 0);
+        p2      ( 0.0175 0 0);
+        radius  0.051;
+    }
+);

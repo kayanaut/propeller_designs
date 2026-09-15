@@ -1,0 +1,131 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+
+// @..._LEVEL@ values are filled in by scripts/configure_mesh.py.
+// Cell size at level n = background cell / 2^n (16 mm background at L0).
+
+castellatedMesh true;
+snap            true;
+addLayers       false;      // Off: the 1B-14 layer trial showed 12 layers need retuning first.
+
+geometry
+{
+    rotor_p2a.stl  { type triSurfaceMesh; name rotor; }
+    stator_p2a.stl { type triSurfaceMesh; name stator; }
+
+    // Volume around the rotor, the tip gap and the duct throat.
+    rotorRegion
+    {
+        type    searchableCylinder;
+        point1  (-0.020 0 0);
+        point2  ( 0.022 0 0);
+        radius  0.056;
+    }
+
+    // Wake behind the rotor. Design A's wake sat in 8 mm cells and lost its swirl too fast.
+    wakeRegion
+    {
+        type    searchableCylinder;
+        point1  (-0.050 0 0);
+        point2  ( 0.200 0 0);
+        radius  0.060;
+    }
+}
+
+castellatedMeshControls
+{
+    maxLocalCells       4000000;
+    maxGlobalCells      8000000;    // Safety cap for a 16 GB machine
+    minRefinementCells  10;
+    nCellsBetweenLevels 3;
+
+    features
+    (
+        { file "rotor_p2a.eMesh";  level 6; }
+        { file "stator_p2a.eMesh"; level 5; }
+    );
+
+    refinementSurfaces
+    {
+        rotor  { level (6 6);   patchInfo { type wall; } }
+        stator { level (5 5); patchInfo { type wall; } }
+    }
+
+    resolveFeatureAngle 30;
+
+    refinementRegions
+    {
+        rotorRegion { mode inside; levels ((1e15 4)); }
+        wakeRegion  { mode inside; levels ((1e15 2)); }
+    }
+
+    locationInMesh (-0.30 0.30 0.30);   // Any point in the water, away from solids
+    allowFreeStandingZoneFaces true;
+}
+
+snapControls
+{
+    nSmoothPatch            5;
+    tolerance               2.0;
+    nSolveIter              100;
+    nRelaxIter              8;
+    nFeatureSnapIter        15;
+    implicitFeatureSnap     false;
+    explicitFeatureSnap     true;
+    multiRegionFeatureSnap  false;
+}
+
+addLayersControls
+{
+    relativeSizes           false;
+    layers
+    {
+        rotor  { nSurfaceLayers 8; }
+        stator { nSurfaceLayers 8; }
+    }
+    expansionRatio          1.2;
+    finalLayerThickness     0.0001;
+    minThickness            0.000010;
+    nGrow                   1;
+    featureAngle            130;
+    slipFeatureAngle        30;
+    nRelaxIter              5;
+    nSmoothSurfaceNormals   3;
+    nSmoothNormals          5;
+    nSmoothThickness        10;
+    maxFaceThicknessRatio   0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedialAxisAngle      90;
+    nBufferCellsNoExtrude   2;
+    nLayerIter              60;
+}
+
+meshQualityControls
+{
+    maxNonOrtho             70;
+    maxBoundarySkewness     20;
+    maxInternalSkewness     4;
+    maxConcave              80;
+    minVol                  1e-18;
+    minTetQuality           1e-20;
+    minArea                 -1;
+    minTwist                0.02;
+    minDeterminant          0.001;
+    minFaceWeight           0.02;
+    minVolRatio             0.01;
+    minTriangleTwist        -1;
+    nSmoothScale            4;
+    errorReduction          0.75;
+
+    relaxed
+    {
+        maxNonOrtho         75;
+    }
+}
+
+mergeTolerance 1e-6;

@@ -1,0 +1,37 @@
+Cleaning case /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+Configured L0: background 94x62x62 (16 mm cells); levels rotor 6 (0.250 mm), stator 5 (0.50 mm), rotorRegion 4 (1.0 mm), wake 2 (4 mm)
+rotor_p2a.stl: 84022 triangles, closed, one shell, outward, volume 36459 mm3
+stator_p2a.stl: 68442 triangles, closed, one shell, outward, volume 235269 mm3
+rotor radius 49.91 mm, x -14.00..17.00 mm; duct throat 103.97 mm; clearance 2.13 mm at x = -0.13 mm
+MRF r = 51.0 mm, x -15.0..17.5 mm: 1.09 mm to rotor, 0.98 mm to duct, 0.50 mm to the motor pod
+All geometry checks passed; STLs copied to constant/triSurface/
+Running surfaceCheck on /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+Running surfaceCheck on /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+Running blockMesh on /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+Running surfaceFeatureExtract on /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+Running snappyHexMesh on /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+Running topoSet on /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+Running checkMesh on /home/kaya/Desktop/LX/thruster/drone_propeller_designs/toroidal_rov_thruster/prototype2A_M2_openFOAM
+	Command being timed: "./Allmesh L0"
+	User time (seconds): 1021.70
+	System time (seconds): 116.78
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 19:01.92
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3623320
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 2518
+	Minor (reclaiming a frame) page faults: 79456606
+	Voluntary context switches: 4152
+	Involuntary context switches: 18974
+	Swaps: 0
+	File system inputs: 568528
+	File system outputs: 1473312
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
