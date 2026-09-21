@@ -12,9 +12,17 @@ repeat the four defects found in the prior art at _work/tools/propgen.py:
   3. radius lies in XY with thrust along +Z, not radius along Y;
   4. tessellation is 0.05 mm, not 0.35 mm.
 
-    python3 cad/tools/build_ducted_kort.py
+    python3 cad/tools/build_ducted_kort.py                  # the catalogue model, D = 250
+    python3 cad/tools/build_ducted_kort.py --diameter 100   # the same design, your size
+
+The tables are dimensioned for a 250 mm propeller. Scaling them is legitimate because they
+are written as RATIOS of the diameter (c/D, t/D, P/D, r/R) -- which is the entire reason
+model series are published that way. What does NOT scale is the water: a 100 mm propeller
+at the same rpm runs at a quarter the Reynolds number and a quarter the tip speed. The
+geometry is right; the performance is a different question, and nothing in this
+repository has been validated against a physical measurement.
 """
-import csv, math, os, sys
+import argparse, csv, math, os, sys
 import cadquery as cq
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -33,14 +41,40 @@ def interp(xs, ys, x):
     return ys[-1]
 
 # ---------------------------------------------------------------- parameters
-D          = 250.0          # propeller/nozzle nominal diameter, mm
-NOZZLE_ID  = 250.0          # nozzle inner diameter at the throat
-TIP_GAP    = 1.5            # brief
-L          = 0.5*D          # nozzle length, L/D = 0.5
-Z_BLADES   = 4
+# D_REF is the diameter the committed tables are dimensioned at -- see the header of
+# blade-planform.csv ("From the brief: D = 250 mm"). Every length below is derived from
+# the requested diameter, so the defaults reproduce the catalogue model exactly.
+D_REF      = 250.0          # diameter the tables were written for, mm
+L_D        = 0.5            # nozzle length / diameter, from the brief
+DEFLECTION = 0.05           # briefs' tessellation tolerance
+
+D          = D_REF          # propeller/nozzle nominal diameter, mm  (--diameter)
+NOZZLE_ID  = D_REF          # nozzle inner diameter at the throat    (--nozzle-id)
+TIP_GAP    = 1.5            # brief: 1.5 mm, ~0.6% of D              (--tip-gap)
+Z_BLADES   = 4              # blade count                            (--blades)
+L          = L_D*D          # nozzle length
 REF_R      = NOZZLE_ID/2    # 19A ordinates are measured from prop radius + clearance
 TIP_R      = REF_R - TIP_GAP
-DEFLECTION = 0.05           # briefs' tessellation tolerance
+
+def configure(diameter=D_REF, nozzle_id=None, tip_gap=1.5, blades=4):
+    """Set the build parameters. Call before building anything.
+
+    Kept as module globals rather than threaded through every function: this is a script
+    that builds one propeller per run, and the geometry functions read like the tables do.
+    """
+    global D, NOZZLE_ID, TIP_GAP, Z_BLADES, L, REF_R, TIP_R
+    D         = float(diameter)
+    NOZZLE_ID = float(nozzle_id) if nozzle_id else D
+    TIP_GAP   = float(tip_gap)
+    Z_BLADES  = int(blades)
+    L         = L_D*D
+    REF_R     = NOZZLE_ID/2
+    TIP_R     = REF_R - TIP_GAP
+    if TIP_R <= 0:
+        sys.exit(f"ERROR: tip clearance {TIP_GAP} mm leaves no propeller inside a "
+                 f"{NOZZLE_ID} mm nozzle.")
+    if Z_BLADES < 2:
+        sys.exit(f"ERROR: {Z_BLADES} blades is not a propeller.")
 
 # ------------------------------------------------------------------- nozzle
 def nozzle():
@@ -130,9 +164,17 @@ def blade_wire(r_R, r_mm, c_mm, beta_deg, t_mm, xt, suction_at):
 def blade():
     rows = table("blade-planform.csv")
     suction_at = ka_section()
+    # The table lists r_tip_mm for the reference build; its largest value IS the tip radius
+    # the table was written at (123.5 mm = 250/2 - 1.5). Scaling by the ratio keeps the
+    # default build bit-for-bit identical, because that ratio is exactly 1.0.
+    tip_ref  = max(float(r["r_tip_mm"]) for r in rows)
+    r_scale  = TIP_R / tip_ref
+    # pitch_deg needs no scaling: beta = atan(P/(2*pi*r)) and both P and r scale with D,
+    # so the face-pitch angle at a given r/R is the same at every diameter. That is what
+    # makes P/D the useful number rather than P.
     wires = []
     for r in rows:
-        r_R  = float(r["r_R"]);  r_mm = float(r["r_tip_mm"])
+        r_R  = float(r["r_R"]);  r_mm = float(r["r_tip_mm"])*r_scale
         c_mm = float(r["c_D"])*D
         t_mm = float(r["t_D"])*D
         wires.append(blade_wire(r_R, r_mm, c_mm, float(r["pitch_deg"]), t_mm,
@@ -154,29 +196,75 @@ def blade():
         faces.extend(rs.Faces() if hasattr(rs, "Faces") else [rs])
     for w in (wires[0], wires[-1]):
         faces.append(cq.Face.makeNSidedSurface(w.Edges(), []))
+    # NOTE on scaling: the section wires scale EXACTLY with diameter (measured: 4e-16
+    # relative deviation). These two cap surfaces do not - makeNSidedSurface fits a
+    # surface by minimising an energy functional against absolute tolerances, which is
+    # not scale-invariant. Net effect: blade volume tracks D^3 to about 0.25% rather
+    # than exactly. It is the caps, not the tables. Measured, not assumed.
     shell = cq.Shell.makeShell(faces)
     return cq.Solid.makeSolid(shell)
 
 # ---------------------------------------------------------------------- hub
 def hub():
-    d = {r["parameter"]: float(r["value"]) for r in table("hub.csv")}
+    # hub.csv is dimensioned in mm for D_REF; its own header records the ratios it came
+    # from (hub ratio 0.265 of D, length 0.30 D), so a straight scale is faithful to it.
+    s = D / D_REF
+    d = {r["parameter"]: float(r["value"])*s for r in table("hub.csv")}
     return (cq.Workplane("XY")
             .circle(d["hub_dia_forward"]/2).workplane(offset=d["hub_length"])
             .circle(d["hub_dia_aft"]/2).loft()
             .translate((0, 0, -d["hub_length"]/2)))
 
-def main():
+def main(argv=None):
+    ap = argparse.ArgumentParser(
+        description="Build a ducted Kort propeller from the committed Ka / 19A tables.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="Defaults reproduce the catalogue model in cad/underwater/ducted-kort/.")
+    ap.add_argument("--diameter", type=float, default=D_REF, metavar="MM",
+                    help=f"propeller diameter in mm (default {D_REF:g})")
+    ap.add_argument("--blades", type=int, default=4, metavar="Z",
+                    help="number of blades (default 4)")
+    ap.add_argument("--tip-gap", type=float, default=None, metavar="MM",
+                    help="tip clearance in mm (default 0.6%% of diameter, as the brief)")
+    ap.add_argument("--nozzle-id", type=float, default=None, metavar="MM",
+                    help="nozzle inner diameter (default: same as --diameter)")
+    ap.add_argument("--out", default=D_DIR, metavar="DIR",
+                    help="output directory (default: the ducted-kort data folder)")
+    ap.add_argument("--name", default="ducted_kort_propgen", metavar="STEM",
+                    help="output file stem (default ducted_kort_propgen)")
+    ap.add_argument("--separate", action="store_true",
+                    help="also write the propeller and the nozzle as their own STLs, "
+                         "which is what you need to print them")
+    a = ap.parse_args(argv)
+
+    # The brief's 1.5 mm gap on a 250 mm propeller is 0.6% of D. Hold the RATIO when
+    # scaling, not the millimetres: the same 1.5 mm on a 100 mm propeller is 1.5% of D,
+    # two and a half times the leakage the design was drawn around.
+    tip_gap = a.tip_gap if a.tip_gap is not None else 1.5 * a.diameter / D_REF
+    configure(a.diameter, a.nozzle_id, tip_gap, a.blades)
+
+    gap_pct = 100.0 * TIP_GAP / D
+    print(f"D {D:g} mm   Z {Z_BLADES}   nozzle ID {NOZZLE_ID:g} mm   "
+          f"tip gap {TIP_GAP:.3f} mm ({gap_pct:.2f}% of D)   L {L:g} mm")
+    if gap_pct > 1.0:
+        print(f"WARNING: tip clearance is {gap_pct:.2f}% of D. The ducted-kort brief designs "
+              f"for 0.6%\n         (1.5 mm on 250 mm). Above roughly 1% the leakage over the "
+              f"tip starts to cost\n         real thrust -- that is general ducted-propeller "
+              f"practice, not a rule this repo\n         asserts. Print clearance you cannot "
+              f"hold is worse than clearance you design for.")
+
     noz = nozzle()
     b   = blade()
     prop = hub()
     for i in range(Z_BLADES):
         prop = prop.union(cq.Workplane(obj=b.rotate((0,0,0),(0,0,1), i*360.0/Z_BLADES)))
-    out_stl  = os.path.join(D_DIR, "ducted_kort_propgen.stl")
-    out_step = os.path.join(D_DIR, "ducted_kort_propgen.step")
+    os.makedirs(a.out, exist_ok=True)
+    out_stl  = os.path.join(a.out, a.name + ".stl")
+    out_step = os.path.join(a.out, a.name + ".step")
     compound = cq.Compound.makeCompound([prop.val(), noz.val()])
     cq.exporters.export(cq.Workplane(obj=compound), out_step)
     cq.exporters.export(cq.Workplane(obj=compound), out_stl,
-                        tolerance=DEFLECTION, angularTolerance=0.1)
+                        tolerance=DEFLECTION*D/D_REF, angularTolerance=0.1)
     print(f"blade  volume {b.Volume():9.1f} mm3  valid={b.isValid()}")
     print(f"nozzle volume {noz.val().Volume():9.1f} mm3  valid={noz.val().isValid()}")
     print(f"prop   volume {prop.val().Volume():9.1f} mm3  valid={prop.val().isValid()}")
@@ -184,6 +272,18 @@ def main():
     print(f"bbox  X {bb.xmin:.2f}..{bb.xmax:.2f}  Y {bb.ymin:.2f}..{bb.ymax:.2f}  Z {bb.zmin:.2f}..{bb.zmax:.2f}")
     print(f"wrote {out_stl}")
     print(f"wrote {out_step}")
+    if a.separate:
+        # The combined file holds two separate solids. A slicer can usually split them,
+        # but they print as different parts with different orientations and supports, so
+        # writing them out separately is less error-prone than asking the slicer.
+        for part, shape in (("propeller", prop.val()), ("nozzle", noz.val())):
+            f = os.path.join(a.out, f"{a.name}_{part}.stl")
+            cq.exporters.export(cq.Workplane(obj=shape), f,
+                                tolerance=DEFLECTION*D/D_REF, angularTolerance=0.1)
+            print(f"wrote {f}")
+    if not (b.isValid() and prop.val().isValid() and noz.val().isValid()):
+        return 1
+    return 0
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

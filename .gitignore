@@ -1,0 +1,47 @@
+# Scratch area: experiments, prior art, renders. Not part of the published repository.
+/_work
+
+# Third-party CAD. Fetched on demand, never redistributed -- see docs/SOURCES.md.
+#   cad/underwater/controllable-pitch/fetch-geometry.sh   (SVA Potsdam PPTC)
+#   scripts/fetch_m200_cad.py                             (Blue Robotics M200)
+vendored/
+**/hardware/vendor/
+
+# ---------------------------------------------------------------- generated geometry
+# Rule: if a script in this repository can rebuild it, git does not carry it.
+# Release tags carry the built artefacts instead (.github/workflows/release.yml).
+#
+#   cad/tools/build_ducted_kort.py      -> cad/underwater/ducted-kort/*_propgen.*
+#   <project>/source/run_all.py         -> <project>/exports/**
+#   <project>/source/hardware.py        -> <project>/hardware/REFERENCE_*
+#   <project>/source/export_cfd.py      -> <case>/geometry/*.stl
+/build/
+cad/**/*_propgen.stl
+cad/**/*_propgen.step
+projects/**/exports/
+projects/**/hardware/REFERENCE_*
+projects/**/prototype2A_M2_openFOAM/geometry/*.stl
+projects/**/prototype2A_M2_openFOAM/constant/triSurface/*.stl
+
+# ------------------------------------------------------------- OpenFOAM run output
+# A solve writes gigabytes. Only the archived results/ summaries are kept.
+projects/**/constant/polyMesh/
+projects/**/constant/extendedFeatureEdgeMesh/
+projects/**/constant/triSurface/*_1B14*
+projects/**/processor*/
+projects/**/postProcessing/
+projects/**/0/
+projects/**/[1-9]*/
+projects/**/log.*
+projects/**/case.foam
+projects/**/selfInterPoints.obj
+projects/**/*.zip
+# ...but the archived copies under results/ ARE the record of a run. Keep them.
+!projects/**/results/**/postProcessing/
+!projects/**/results/**/log.*
+
+# ------------------------------------------------------------------------- python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

@@ -42,11 +42,21 @@ def camber(r, hub, scale=1.0):
     u=(r-hub)/(1-hub); rr=0.20+0.80*u
     return interp(_FC_REF, rr)*scale
 
+def _field(v):
+    """One CSV field, quoted per RFC 4180 when it has to be.
+
+    A note column containing ", " used to split the row into more fields than the header,
+    so csv.DictReader silently dropped the tail of the note into a None key. Nothing
+    complained; the data was just quietly wrong.
+    """
+    s = f"{v:.6f}" if isinstance(v, float) else str(v)
+    return '"' + s.replace('"', '""') + '"' if any(c in s for c in ',"\n') else s
+
 def write(slug, name, header, cols, rows):
     with io.open(os.path.join(ROOT, slug, name), "w", encoding="utf-8", newline="\n") as f:
         f.write(header.rstrip("\n") + "\n#\n" + DECL + "\n" + ",".join(cols) + "\n")
         for r in rows:
-            f.write(",".join(f"{v:.6f}" if isinstance(v, float) else str(v) for v in r) + "\n")
+            f.write(",".join(_field(v) for v in r) + "\n")
     print(f"  {slug}/{name}  ({len(rows)} rows)")
 
 # ---------------------------------------------------------------- NACA 4-digit
