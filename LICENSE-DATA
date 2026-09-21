@@ -1,0 +1,45 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 kayanaut
+
+The geometry tables, build briefs, documentation and drawings in this
+repository -- everything under cad/ and docs/, and every .md file outside a
+source directory -- are licensed under the Creative Commons Attribution 4.0
+International License.
+
+You are free to:
+
+  Share  -- copy and redistribute the material in any medium or format
+  Adapt  -- remix, transform, and build upon the material for any purpose,
+            even commercially.
+
+Under the following terms:
+
+  Attribution -- You must give appropriate credit, provide a link to the
+  license, and indicate if changes were made. You may do so in any reasonable
+  manner, but not in any way that suggests the licensor endorses you or your
+  use.
+
+  No additional restrictions -- You may not apply legal terms or technological
+  measures that legally restrict others from doing anything the license
+  permits.
+
+Full licence text: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+THIRD-PARTY MATERIAL
+
+This licence covers the material ORIGINATING IN THIS REPOSITORY only. Some
+tables are transcribed from published sources, and some folders vendor files
+downloaded from third parties. Those retain their own terms and are NOT
+relicensed here. Every such file names its source in its own header, and
+docs/SOURCES.md lists them all.
+
+NO WARRANTY
+
+The geometry and data in this repository are provided as-is, for study and
+experiment. Much of it is explicitly labelled SYNTHETIC or GENERATED: it was
+produced to be dimensionally consistent, not to reproduce a measured design.
+Nothing here has been validated against a physical test. See docs/STATUS.md.
+Do not use it as the basis of a part whose failure could hurt someone without
+doing your own analysis and testing.

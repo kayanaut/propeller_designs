@@ -46,13 +46,23 @@ def fillet(r, hub, blend=0.30, r_root=0.020):
     if u>=blend: return 0.0
     return r_root*(1-u/blend)**1.5
 
+def _field(v):
+    """One CSV field, quoted per RFC 4180 when it has to be.
+
+    A note column containing ", " used to split the row into more fields than the header,
+    so csv.DictReader silently dropped the tail of the note into a None key. Nothing
+    complained; the data was just quietly wrong.
+    """
+    s = f"{v:.6f}" if isinstance(v, float) else str(v)
+    return '"' + s.replace('"', '""') + '"' if any(c in s for c in ',"\n') else s
+
 def write(slug, name, header, cols, rows):
     path = os.path.join(ROOT, slug, name)
     with io.open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(header.rstrip("\n") + "\n#\n" + DECL + "\n")
         f.write(",".join(cols) + "\n")
         for r in rows:
-            f.write(",".join(f"{v:.6f}" if isinstance(v, float) else str(v) for v in r) + "\n")
+            f.write(",".join(_field(v) for v in r) + "\n")
     print(f"  {slug}/{name}  ({len(rows)} rows)")
 
 # ---------------------------------------------------------------- NACA 4-digit

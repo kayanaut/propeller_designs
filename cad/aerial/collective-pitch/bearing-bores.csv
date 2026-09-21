@@ -22,6 +22,6 @@
 # RAKE   generator-line rake ONLY - skew-induced rake NOT included; add it when placing.
 # WIRE   seam at TE, constant point count, CCW seen from +Z. Sharp TE - no marine floor.
 designation,bore_mm,outer_dia_mm,width_mm,note
-MR128,8.000000,12.000000,3.500000,thin-section, lightest
-688,8.000000,16.000000,5.000000,wider race, higher radial capacity
-608,8.000000,22.000000,7.000000,standard skate bearing, heaviest
+MR128,8.000000,12.000000,3.500000,"thin-section, lightest"
+688,8.000000,16.000000,5.000000,"wider race, higher radial capacity"
+608,8.000000,22.000000,7.000000,"standard skate bearing, heaviest"

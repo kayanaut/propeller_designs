@@ -1,7 +1,0 @@
-{
-  "method": "VTK triangle collision, all contacts, identity transform; exclude pairs sharing any vertex",
-  "candidate_nonadjacent_intersections": 0,
-  "pairs": [],
-  "seconds": 72.31887483596802,
-  "limitation": "Coplanar or numerical contacts require inspection; exact BRep self-interference remains a separate gate."
-}
